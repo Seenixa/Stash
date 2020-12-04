@@ -20,7 +20,9 @@ int A = strlen (a);
 for (i = 0; i < A; i++)
         {
         if (a[i] >= 'Z')
-        a[i] = a[i] + v;
+                {
+                a[i] = a[i] + v;
+                }
         printf ("\n%c", a[i]);
         }
 printf ("\n%s", a);
