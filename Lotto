@@ -28,12 +28,14 @@ int* lottohuzas(int darabossz, int darabnyer)
     {
         random = rand() % darabossz-i;
         nyeroszamok[i] = szamok[random];
+        
         for(j=random;j<darabossz;j++)
-        {
-            szamok[j] = szamok[j+1];
-        }
+            {
+                szamok[j] = szamok[j+1];
+            }
     }
-return nyeroszamok;
+    
+    return nyeroszamok;
 }
 
 int main() 
