@@ -1,0 +1,4 @@
+# Stash
+Tanulás, gyakorlás.
+
+trololo
