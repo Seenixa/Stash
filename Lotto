@@ -30,9 +30,9 @@ int* lottohuzas(int darabossz, int darabnyer)
         nyeroszamok[i] = szamok[random];
         
         for(j=random;j<darabossz;j++)
-            {
-                szamok[j] = szamok[j+1];
-            }
+        {
+            szamok[j] = szamok[j+1];
+        }
     }
     
     return nyeroszamok;
@@ -44,8 +44,8 @@ int main()
     p = lottohuzas(darabossz, darabnyer);
     
     for(i=0;i<darabnyer;i++)
-        {
-            printf("A nyeroszam: %d\n",*(p+i));
-            delay(1);
-        }
+    {
+        printf("A nyeroszam: %d\n",*(p+i));
+        delay(1);
+    }
 }
