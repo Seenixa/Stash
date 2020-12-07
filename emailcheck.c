@@ -107,18 +107,30 @@ bool char_check(char* email, int full_length)
 int main()
 {
     int main_menu, check_menu;
-    printf("Valasszon az adott opciok kozul.\n1 - ellenorzes\n2 - belepes\n3 - ellenorzes\n");
-    scanf("%d", &main_menu);
     char email[40];
+    printf("Valasszon az adott opciok kozul.\n1 - ellenorzes\n2 - belepes\n");
+    scanf("%d", &main_menu);
+    if(main_menu < 1 || main_menu> 4)
+    {
+        printf("Helytelen menu valasztas.");
+        return 0;
+    }
+    
     printf("Adja meg az e-mail cimet.\n");
     scanf("%s", &email);
     int full_length = strlen(email);
+
     switch (main_menu)
     {
     case 1:
         printf("\nMilyen e-mailt szeretne ellenorizni?\n");
         printf("1. Gmail.hu\n2. Gmail.com\n3. Freemail.hu\n4. egyeb\n");
         scanf("%d", &check_menu);
+        if(check_menu < 1 || check_menu> 4)
+        {
+            printf("Helytelen menu valasztas.");
+            return 0;
+        }
     
         if(email[length_check(email, full_length)] != '@')
         {
@@ -172,7 +184,7 @@ int main()
             return 0;
         }
         
-        printf("Az email cim helyes.");
+        printf("Az email cim formailag helyes.");
         
         return 0;
         break;
@@ -180,11 +192,7 @@ int main()
     case 2:
     
     break;
-    
-    case 3:
-    
-    break;
-    
+
     default:
     break;
     }
@@ -192,6 +200,5 @@ int main()
     return 0;
 
 }
-
 
 
