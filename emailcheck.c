@@ -65,11 +65,17 @@ bool char_check(char* email, int full_length)
 
 int main()
 {
+    int menu;
+    printf("Valasszon az adott opciok kozul.\n 1 - ellenorzes\n2 - belepes\n3, ellenorzes");
+    scanf("%d\n", &menu);
     char email[40];
-    printf("Adja meg az ellenorizni kivant e-mail cimet.\n");
+    printf("Adja meg az e-mail cimet.\n");
     scanf("%s", &email);
     int full_length = strlen(email);
-
+    switch (menu)
+    {
+    case 1: 
+    
     if(length_check(email, full_length) < 8 || length_check(email, full_length) > 18)
     {
         printf("\nA cim hossza 8-18 karakter kozottinek kell legyen.\n");
@@ -90,5 +96,16 @@ int main()
         return 0;
     }
     printf("Az email cim helyes.");
+    return 0;
+    break;
+    
+    case 2:
+    
+    break;
+    
+    case 3:
+    
+    break;
+    
     return 0;
 }
