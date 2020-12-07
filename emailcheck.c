@@ -3,6 +3,12 @@
 #include <stdbool.h>
 #include <string.h>
 
+struct reged_emails
+{
+    char address[40];
+    char password[20];
+};
+
 int length_check(char* email, int full_length)
 {
     int i=0, length;
@@ -16,7 +22,11 @@ int length_check(char* email, int full_length)
         }
         i++;
     }
-
+    if(at == false)
+    {
+        return 0;
+    }
+    
     return length;
 }
 
@@ -189,16 +199,125 @@ int main()
         return 0;
         break;
     
-    case 2:
+    case 2:;
+    char password[20];
+    struct reged_emails reg1;
+    strcpy(reg1. address,  "nepatomi@gmail.com");
+    strcpy(reg1. password, "WASDWASD");
     
+    struct reged_emails reg2;
+    strcpy(reg2. address, "nepatomi@gmail.hu");
+    strcpy(reg2. password, "WASDWASD");
+    
+    struct reged_emails reg3;
+    strcpy(reg3. address, "nepatomi@freemail.hu");
+    strcpy(reg3. password, "WASDWASD");
+    
+    struct reged_emails reg4;
+    strcpy(reg4. address, "nepatomi@mav.hu");
+    strcpy(reg4. password, "WASDWASD");
+    
+    struct reged_emails reg5;
+    strcpy(reg5. address, "nepa.tomi@gmail.com");
+    strcpy(reg5. password, "WASDWASD");
+    
+    if(strcmp(reg1. address, email) == 0)
+        {
+            check_menu = 1;
+        }
+        else if(strcmp(reg2. address, email) == 0)
+        {
+            check_menu = 2;
+        }
+        else if(strcmp(reg3. address, email) == 0)
+        {
+            check_menu = 3;
+        }
+        else if(strcmp(reg4. address, email) == 0)
+        {
+            check_menu = 4;
+        }
+        else if(strcmp(reg5. address, email) == 0)
+        {
+            check_menu = 5;
+        }
+        else
+        {
+            printf("Nincs ilyen e-mail az adatbazisban.");
+            return 0;
+        }
+    printf("\nAdja meg a Jelszavat!\n");
+    scanf("%s", &password);
+    
+    switch(check_menu)
+    {
+    case 1: 
+    if(strcmp(reg1. password, password) == 0)
+    {
+        printf("Sikeres bejelentkezes.");
+    }
+    else
+    {
+        printf("Rossz jelszo lett megadva.");
+        return 0;
+    }
+    break;
+    
+    case 2: 
+    if(strcmp(reg2. password, password) == 0)
+    {
+        printf("Sikeres bejelentkezes.");
+    }
+    else
+    {
+        printf("Rossz jelszo lett megadva.");
+        return 0;
+    }
+    break;
+    
+    case 3: 
+    if(strcmp(reg3. password, password) == 0)
+    {
+        printf("Sikeres bejelentkezes.");
+    }
+    else
+    {
+        printf("Rossz jelszo lett megadva.");
+        return 0;
+    }
+    break;
+    
+    case 4: 
+    if(strcmp(reg4. password, password) == 0)
+    {
+        printf("Sikeres bejelentkezes.");
+    }
+    else
+    {
+        printf("Rossz jelszo lett megadva.");
+        return 0;
+    }
+    break;
+    
+    case 5: 
+    if(strcmp(reg5. password, password) == 0)
+    {
+        printf("Sikeres bejelentkezes.");
+    }
+    else
+    {
+        printf("Rossz jelszo lett megadva.");
+        return 0;
+    }
     break;
 
     default:
     break;
     }
+    default:
+    break;
+    }
     
     return 0;
-
 }
-
 
