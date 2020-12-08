@@ -1,7 +1,6 @@
-object Reswitch
-{
-   def main(args: Array[String]) 
-   {
+object Reswitch{
+   def main(args: Array[String]) {
+       
     val betu = 'z'
     
     // Az alap program amit at kell irni switch-re
@@ -27,7 +26,6 @@ object Reswitch
     
     // Ujrairva 
     
-    
     betu match{
          case 'X' =>
              val s = 0
@@ -44,6 +42,5 @@ object Reswitch
          case _   => 
              println("Ismeretlen betu --> " + betu)
     }
-
    }
 }
