@@ -4,7 +4,7 @@ object Szorzotabla
    {
      for(y <- 1 to 10)
      {
-      if(y>1) println("\n")
+      if(y>1) println("")
        for(x <- 1 to 10)
        {
           print("" + x*y + " ")
