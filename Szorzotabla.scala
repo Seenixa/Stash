@@ -1,4 +1,4 @@
-object HelloWorld
+object Szorzotabla
 {
    def main(args: Array[String]) 
    {
