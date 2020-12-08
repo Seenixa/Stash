@@ -39,7 +39,7 @@ object HelloWorld
 
      do
      {
-       println("")
+       println("\n")
        var y: Int = 0
        
        do
