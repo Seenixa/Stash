@@ -30,13 +30,11 @@ object Bubble {
      
      def sortasc(vector: Array[Int]):Array[Int] ={
        var vectorasc = vector
-       for(i <- 1 to 99){
-         for(j <-1 to 99){
+       for(i <- 1 to 99; j <- 1 to 99){
           if(vectorasc(j-1) > vectorasc(j)){
             var tmp = vectorasc(j-1)
             vectorasc(j-1) = vectorasc(j)
             vectorasc(j) = tmp
-          }
          }
        }
        vectorasc
@@ -44,13 +42,11 @@ object Bubble {
      
      def sortdec(vector: Array[Int]):Array[Int] ={
        var vectordec = vector
-       for(i <- 1 to 99){
-         for(j <-1 to 99){
+       for(i <- 1 to 99; j <- 1 to 99){
           if(vectordec(j-1) < vectordec(j)){
             var tmp = vectordec(j-1)
             vectordec(j-1) = vectordec(j)
             vectordec(j) = tmp
-          }
          }
        }
        vectordec
