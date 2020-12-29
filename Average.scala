@@ -8,13 +8,13 @@ def main(args: Array[String]) {
     var two = 0
     var one = 0
     
-    for(i <- 0 to 9){
-        if(grade(i) < 0 || grade(i) > 5){
+    for(i <- grade){
+        if(i < 0 || i > 5){
             println("\n1 es 5 kozotti erdemjegyek leteznek.")
             }
         else{
-            sum+= grade(i)
-        grade(i) match{
+            sum+= i
+        i match{
             case 5 =>
             five+= 1
             
