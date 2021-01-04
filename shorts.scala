@@ -36,22 +36,21 @@ object shorts{
     // Irjunk fuggvenyt, mely harom atadott egesz szamot nagysag szerint sorba rendez, a valtozas a visszaadott ertekekben latszik! //
     
     val numbers:Array[Int] = Array[Int](11, 4, -1)
-
     def sort( numbers:Array[Int]) ={
-      def swap( numbers_sort:Array[Int], j:Int) ={
-        var tmp = numbers_sort(j)
-        numbers_sort(j) = numbers_sort(j-1)
-        numbers_sort(j-1) = tmp
+      def swap( numbers:Array[Int], j:Int) ={
+        var tmp = numbers(j)
+        numbers(j) = numbers(j-1)
+        numbers(j-1) = tmp
       }
-      var numbers_sort = numbers
       for( i <- 1 until numbers.length; j <- 1 until numbers.length){
-        if( numbers_sort(j) < numbers_sort(j-1)){
-          swap(numbers_sort, j)
+        if( numbers(j) < numbers(j-1)){
+          swap(numbers, j)
         }
       }
-      numbers_sort
+      numbers
     }
-    for(i <- sort(numbers))
-      println(i)    
+    sort(numbers)
+    for( i <- numbers)
+      println( i)
   }
 }
