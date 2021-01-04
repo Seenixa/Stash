@@ -3,11 +3,13 @@ object shorts{
     
     // Irjunk fuggvenyt, mely parameterkent egy karaktert es egy egesz erteket kap, es ennyi darabot ir ki egymas utan az atadott karakterbol! //
 
-    val number = 10
-    val letter = 'a'
-    
+  val number = 10
+  val letter = 'a'
+  def writechar(number:Int, letter:Char) = {
     for( i <- 0 until number)
       print(letter + " ")
+  }
+  writechar(number, letter)
     
     // Irjunk fuggvenyt mely parameterkent egy valos(a) és egy pozitiv(n) egesz szamot kap. Visszateresi erteke pedig: an //
 
