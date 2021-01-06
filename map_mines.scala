@@ -3,12 +3,26 @@ object map_mines{
     val r = scala.util.Random     
     val map_top = 10
     val map_side = 10
+    var larger = 0
+    
+    if( map_top > map_side || map_top == map_side)
+      larger = map_top
+    else
+      larger = map_side
     
     class position(
       var x:Int,
       var y:Int
     )
-    val mine_pos = new position(r.nextInt(11), 0)
+    
+    val mines = Array[position]( 
+      new position(r.nextInt(map_side+1), r.nextInt(map_top+1)),
+      new position(r.nextInt(map_side+1), r.nextInt(map_top+1)),
+      new position(r.nextInt(map_side+1), r.nextInt(map_top+1)),
+      new position(r.nextInt(map_side+1), r.nextInt(map_top+1)),
+      new position(r.nextInt(map_side+1), r.nextInt(map_top+1))
+    )
+    
     val start_pos = new position(0, 0)
     var rt_pos = start_pos
     
@@ -18,9 +32,10 @@ object map_mines{
       else
         rt_pos.y = 10
       Thread.sleep(1000)
-      println(rt_pos.x + " " + rt_pos.y)
-      if ( rt_pos.x == mine_pos.x && rt_pos.y == mine_pos.y)
-        println("Booom.")      
+      println( rt_pos.x + " " + rt_pos.y)
+      for ( i <- 0 until 5)
+        if ( rt_pos.x == mines(i).x && rt_pos.y == mines(i).y)
+          println("Booom.")      
     }
     def move_down :Unit ={
       if( rt_pos.y > 0)
@@ -29,8 +44,9 @@ object map_mines{
         rt_pos.y = 0
       Thread.sleep(1000)
       println(rt_pos.x + " " + rt_pos.y)
-      if ( rt_pos.x == mine_pos.x && rt_pos.y == mine_pos.y)
-        println("Booom.")      
+      for ( i <- 0 until 5)
+        if ( rt_pos.x == mines(i).x && rt_pos.y == mines(i).y)
+          println("Booom.")      
     }
     def move_right :Unit ={
       if( rt_pos.x < map_side)
@@ -39,8 +55,9 @@ object map_mines{
         rt_pos.x = 10
       Thread.sleep(1000)
       println(rt_pos.x + " " + rt_pos.y)
-      if ( rt_pos.x == mine_pos.x && rt_pos.y == mine_pos.y)
-        println("Booom.")      
+      for ( i <- 0 until 5)
+        if ( rt_pos.x == mines(i).x && rt_pos.y == mines(i).y)
+          println("Booom.")     
     }
     def move_left :Unit ={
       if( rt_pos.x > 0)
@@ -49,8 +66,9 @@ object map_mines{
         rt_pos.x = 0
       Thread.sleep(1000)
       println(rt_pos.x + " " + rt_pos.y)
-      if ( rt_pos.x == mine_pos.x && rt_pos.y == mine_pos.y)
-        println("Booom.")      
+      for ( i <- 0 until 5)
+        if ( rt_pos.x == mines(i).x && rt_pos.y == mines(i).y)
+          println("Booom.")      
     }
 
     def move( move_x:Int, move_y:Int): Unit ={
@@ -86,5 +104,9 @@ object map_mines{
         rt_pos.y = 0
       println(rt_pos.x + " " + rt_pos.y)
     }
+      for(i <- 0 until 5)
+        println( mines(i).x + " " + mines(i).y)
+      for(i <- 1 to 10)
+        move(1,1)
   }
 }
