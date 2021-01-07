@@ -1,27 +1,34 @@
 object map_mines{
   def main(args: Array[String]):Unit ={
     val r = scala.util.Random     
-    val map_top = 10
-    val map_side = 10
-    var larger = 0
-    
-    if( map_top > map_side || map_top == map_side)
-      larger = map_top
-    else
-      larger = map_side
+    val map_top = 5
+    val map_side = 5
+    var numberOfMines = 10
+    var swap:Boolean = false 
     
     class position(
       var x:Int,
       var y:Int
     )
     
-    val mines = Array[position]( 
-      new position(r.nextInt(map_side+1), r.nextInt(map_top+1)),
-      new position(r.nextInt(map_side+1), r.nextInt(map_top+1)),
-      new position(r.nextInt(map_side+1), r.nextInt(map_top+1)),
-      new position(r.nextInt(map_side+1), r.nextInt(map_top+1)),
-      new position(r.nextInt(map_side+1), r.nextInt(map_top+1))
-    )
+    if( numberOfMines > (map_top+1)*(map_side+1))
+      numberOfMines = (map_top+1)*(map_side+1)
+    var mines = new Array[position](numberOfMines)
+    
+    for( i <- 0 until numberOfMines){
+      mines(i) = new position (r.nextInt(map_side+1), r.nextInt(map_top+1))
+      for( j <- 0 until i){
+        while( mines(i).x == mines(j).x && mines(i).y == mines(j).y || swap == true){
+          mines(i) = new position (r.nextInt(map_side+1), r.nextInt(map_top+1))
+          swap = false
+          for( z <- 0 until j)
+              if(mines(i).x == mines(z).x && mines(i).y == mines(z).y){
+                swap = true
+              }
+        }
+      }
+    }
+    
     
     val start_pos = new position(0, 0)
     var rt_pos = start_pos
@@ -30,11 +37,11 @@ object map_mines{
       if( rt_pos.y < map_top)
         rt_pos.y+= 1
       else
-        rt_pos.y = 10
-      Thread.sleep(1000)
+        rt_pos.y = map_top
+      Thread.sleep(100)
       println( rt_pos.x + " " + rt_pos.y)
-      for ( i <- 0 until 5)
-        if ( rt_pos.x == mines(i).x && rt_pos.y == mines(i).y)
+      for ( mine <- mines)
+        if ( rt_pos.x == mine.x && rt_pos.y == mine.y)
           println("Booom.")      
     }
     def move_down :Unit ={
@@ -42,21 +49,21 @@ object map_mines{
         rt_pos.y-= 1
       else
         rt_pos.y = 0
-      Thread.sleep(1000)
+      Thread.sleep(100)
       println(rt_pos.x + " " + rt_pos.y)
-      for ( i <- 0 until 5)
-        if ( rt_pos.x == mines(i).x && rt_pos.y == mines(i).y)
-          println("Booom.")      
+      for ( mine <- mines)
+        if ( rt_pos.x == mine.x && rt_pos.y == mine.y)
+          println("Booom.")     
     }
     def move_right :Unit ={
       if( rt_pos.x < map_side)
         rt_pos.x+= 1
       else
-        rt_pos.x = 10
-      Thread.sleep(1000)
+        rt_pos.x = map_side
+      Thread.sleep(100)
       println(rt_pos.x + " " + rt_pos.y)
-      for ( i <- 0 until 5)
-        if ( rt_pos.x == mines(i).x && rt_pos.y == mines(i).y)
+      for ( mine <- mines)
+        if ( rt_pos.x == mine.x && rt_pos.y == mine.y)
           println("Booom.")     
     }
     def move_left :Unit ={
@@ -64,10 +71,10 @@ object map_mines{
         rt_pos.x-= 1
       else
         rt_pos.x = 0
-      Thread.sleep(1000)
+      Thread.sleep(100)
       println(rt_pos.x + " " + rt_pos.y)
-      for ( i <- 0 until 5)
-        if ( rt_pos.x == mines(i).x && rt_pos.y == mines(i).y)
+      for ( mine <- mines)
+        if ( rt_pos.x == mine.x && rt_pos.y == mine.y)
           println("Booom.")      
     }
 
@@ -93,20 +100,21 @@ object map_mines{
       if( move_to_y < 10 && move_to_y > 0)
         rt_pos.y = move_to_y
       
-      if( move_to_x > 10)
-        rt_pos.x = 10
+      if( move_to_x > map_side)
+        rt_pos.x = map_side
       if( move_to_x < 0)
         rt_pos.x = 0
       
-      if( move_to_y > 10)
-        rt_pos.y = 10
+      if( move_to_y > map_top)
+        rt_pos.y = map_top
       if( move_to_y < 0)
         rt_pos.y = 0
       println(rt_pos.x + " " + rt_pos.y)
     }
-      for(i <- 0 until 5)
-        println( mines(i).x + " " + mines(i).y)
-      for(i <- 1 to 10)
+      for(mine <- mines)
+        println("X: " + mine.x + ", Y: " + mine.y)
+    
+      for(i <- 1 to 5)
         move(1,1)
   }
 }
