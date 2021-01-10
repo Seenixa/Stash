@@ -1,6 +1,4 @@
-
-
-object gallows {
+object Akasztofa {
   def main(args: Array[String]): Unit ={
     var kor = 0
     
@@ -34,10 +32,7 @@ object gallows {
     }  
     
     def deciphered(tips:Array[Char], word:String): Boolean={
-      if( display(tips, word) == word)
-        true
-      else
-        false
+      ( display(tips, word) == word)
     }
     
     def isIn(letter:Char, word:String):Boolean={
@@ -73,10 +68,13 @@ object gallows {
       var winOrLose = false
       var tips = new Array[Char](maxLife + word.length)
       var tip = ' '
-      while( winOrLose == false || kor == (maxLife + word.length)){
+      while( winOrLose == false){
         println(display( tips, word))
-        println( "Adja meg a kovetkezo betut: ")
+        for(i <- 0 until kor)
+          print(tips(i) + ", ")
+        println( "\nAdja meg a kovetkezo betut: ")
         println("" + lives(maxLife, (badTips(tips, word))))
+        println("\n\n\n\n")
         tip = scala.io.StdIn.readChar()
         tips(kor) = tip
         kor+= 1
