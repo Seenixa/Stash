@@ -3,7 +3,7 @@ object mapMines{
     val r = scala.util.Random     
     val mapHeight = 3
     val mapLength = 3
-    var numberOfMines = 1
+    var numberOfMines = 30
     var swap = false
     var minesBlown = 0
     var isThereMine = false
@@ -14,34 +14,42 @@ object mapMines{
     )
     
     class moves(position:position){
-      val up = new position(position.x, position.y + 1)
-      val down = new position(position.x, position.y - 1)
+      val down = new position(position.x, position.y + 1)
+      val up = new position(position.x, position.y - 1)
       val right = new position(position.x + 1, position.y)
       val left = new position(position.x - 1, position.y)
-    }
-    
-    if( numberOfMines > (mapHeight+1)*(mapLength+1))
-      numberOfMines = (mapHeight+1)*(mapLength+1)
-    var mines = new Array[position](numberOfMines)
-    
-    for( i <- 0 until numberOfMines){
-      mines(i) = new position (r.nextInt(mapLength+1), r.nextInt(mapHeight+1))
-      for( j <- 0 until i){
-        while( mines(i).x == mines(j).x && mines(i).y == mines(j).y || swap == true){
-          mines(i) = new position (r.nextInt(mapLength+1), r.nextInt(mapHeight+1))
-          swap = false
-          for( z <- 0 until j)
-              if(mines(i).x == mines(z).x && mines(i).y == mines(z).y){
-                swap = true
-              }
-        }
-      }
     }
     
     val startingPosition = new position(0, 0)
     var realTimePosition = startingPosition
     
+    if( numberOfMines > (mapHeight+1)*(mapLength+1))
+      numberOfMines = ((mapHeight+1)*(mapLength+1) - 1)
+    var mines = new Array[position](numberOfMines)
+    
+    for( i <- 0 until numberOfMines){
+      mines(i) = new position (r.nextInt(mapLength+1), r.nextInt(mapHeight+1))
+      while ( mines(i).x == 0 && mines(i).y == 0)
+          mines(i) = new position (r.nextInt(mapLength+1), r.nextInt(mapHeight+1))
+      for( j <- 0 until i){
+        if( mines(i).x == 0 && mines(i).y == 0)
+          mines(i) = new position (r.nextInt(mapLength+1), r.nextInt(mapHeight+1))
+        while( mines(i).x == mines(j).x && mines(i).y == mines(j).y || swap == true){
+          mines(i) = new position (r.nextInt(mapLength+1), r.nextInt(mapHeight+1))
+          swap = false
+          for( z <- 0 until j){
+              if(( mines(i).x == mines(z).x && mines(i).y == mines(z).y)||( mines(i).x == 0 && mines(i).y == 0))
+                swap = true
+
+              }
+        }
+      }
+    }
+    
+
+    
     def display( mines :Array[position], realTimePosition:position) :Unit ={
+      println("C = Character, O = Safe Place, M = Mine")
       for( i <- 0 to mapHeight; j <- 0 to mapLength){
         for(z <- 0 until numberOfMines){
           if( mines(z).x == j && mines(z).y == i){
@@ -57,8 +65,8 @@ object mapMines{
           println("\n")
         isThereMine = false
       }
-      println(" \n")
-      println(" \n")
+      println(" \n \n \n")
+      println(" \n \n ")
     }
     
     def afterMoveCheck :Unit ={
@@ -70,7 +78,7 @@ object mapMines{
         realTimePosition.x = 0
       if( realTimePosition.y <= 0)
         realTimePosition.y = 0
-      Thread.sleep(100)
+      Thread.sleep(1000)
       
       for ( mine <- mines)
         if ( realTimePosition.x == mine.x && realTimePosition.y == mine.y){
@@ -93,12 +101,12 @@ object mapMines{
     }
       if( moveY > 0)
         for(i <- 0 until moveY){
-          realTimePosition = new moves(realTimePosition).up
+          realTimePosition = new moves(realTimePosition).down
           afterMoveCheck
         }
       if( moveY < 0)
         for(i <- 0 until (moveY).abs){
-          realTimePosition = new moves(realTimePosition).down
+          realTimePosition = new moves(realTimePosition).up
           afterMoveCheck
         }
     }
