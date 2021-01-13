@@ -1,10 +1,12 @@
 object mapMines{
   def main(args: Array[String]):Unit ={
     val r = scala.util.Random     
-    val mapHeight = 10
-    val mapLength = 10
-    var numberOfMines = 50
+    val mapHeight = 3
+    val mapLength = 3
+    var numberOfMines = 1
+    var swap = false
     var minesBlown = 0
+    var isThereMine = false
     
     class position(
       var x:Int,
@@ -39,6 +41,26 @@ object mapMines{
     val startingPosition = new position(0, 0)
     var realTimePosition = startingPosition
     
+    def display( mines :Array[position], realTimePosition:position) :Unit ={
+      for( i <- 0 to mapHeight; j <- 0 to mapLength){
+        for(z <- 0 until numberOfMines){
+          if( mines(z).x == j && mines(z).y == i){
+            print("M ")
+            isThereMine = true
+          }
+        }
+        if( realTimePosition.x == j && realTimePosition.y == i)
+          print("C ")
+        else if ( isThereMine == false)
+          print("O ")
+        if( j == mapLength)
+          println("\n")
+        isThereMine = false
+      }
+      println(" \n")
+      println(" \n")
+    }
+    
     def afterMoveCheck :Unit ={
       if( realTimePosition.x >= mapLength)
         realTimePosition.x = mapLength
@@ -49,7 +71,7 @@ object mapMines{
       if( realTimePosition.y <= 0)
         realTimePosition.y = 0
       Thread.sleep(100)
-      println( realTimePosition.x + " " + realTimePosition.y)
+      
       for ( mine <- mines)
         if ( realTimePosition.x == mine.x && realTimePosition.y == mine.y){
           println("Booom.")
@@ -68,7 +90,7 @@ object mapMines{
         for(i <- 0 until (moveX).abs){
           realTimePosition = new moves(realTimePosition).left
           afterMoveCheck
-        }
+    }
       if( moveY > 0)
         for(i <- 0 until moveY){
           realTimePosition = new moves(realTimePosition).up
@@ -100,11 +122,20 @@ object mapMines{
       println(realTimePosition.x + " " + realTimePosition.y)
     }
     
-    for(mine <- mines)
-      println("X: " + mine.x + "Y: " + mine.y)
+    def letsGo :Unit = {
+      var steps = 0
+      while (steps > 10)
+        display(mines, realTimePosition)
+    }
+    display(mines, realTimePosition)
+    for( i<- 0 until 3){
+      move(1,0)
+      display(mines, realTimePosition)
+      move(0,1)
+      display(mines, realTimePosition)
+    }
     
-    for(i <- 1 to 10)
-      move(1,1)       
+
     
     println("Mines Blown: " + minesBlown)
     println("Mines still in: " + (numberOfMines - minesBlown))
