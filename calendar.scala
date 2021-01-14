@@ -10,7 +10,7 @@ object calendar{
       currentYear % 4 == 0
     }
     
-    def firstDay( year:Int): String ={
+    def firstDayOfYear( year:Int): String ={
       var day = ""
       if( year == 2018)
         day = days(0)
@@ -23,6 +23,11 @@ object calendar{
         day = days( ( ( year - 2) - numberOfLeapYears) % 7) 
       }
       day
+    }
+    
+    def firstDayOfMonth( firstDayOfYear: String, monthsId: Int): String ={
+      
+      "asd"
     }
     
     def monthLengthByName( monthsName: String, leapYear: Boolean) :Int ={
