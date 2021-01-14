@@ -46,8 +46,6 @@ object mapMines{
       }
     }
     
-
-    
     def display( mines :Array[position], realTimePosition:position) :Unit ={
       println("C = Character, O = Safe Place, M = Mine")
       for( i <- 0 to mapHeight; j <- 0 to mapLength){
@@ -130,21 +128,32 @@ object mapMines{
       println(realTimePosition.x + " " + realTimePosition.y)
     }
     
-    def letsGo :Unit = {
+    def letsGo() :Unit = {
+      var step = 0
       var steps = 0
-      while (steps > 10)
-        display(mines, realTimePosition)
-    }
-    display(mines, realTimePosition)
-    for( i<- 0 until 3){
-      move(1,0)
-      display(mines, realTimePosition)
-      move(0,1)
-      display(mines, realTimePosition)
+      var invalidsteps = 0
+      while ( steps < 10 || invalidSteps >= 3){
+        display( mines, realTimePosition)
+        println("1 = up, 2 = down, 3 = right, 4 = left")
+        println("Make your move.")
+        step = scala.io.StdIn.readInt()
+        step match{
+          case 1 => move(0,1)
+            steps+= 1
+          case 2 =>  move(0,-1)
+            steps+= 1
+          case 3 => move(1,0)
+            steps+= 1
+          case 4 => move(-1,0)
+            steps+= 1
+          case _ => println("invalid move")
+            invalidsteps+= 1
+        } 
+      }
     }
     
-
-    
+    letsGo()
+       
     println("Mines Blown: " + minesBlown)
     println("Mines still in: " + (numberOfMines - minesBlown))
   }
