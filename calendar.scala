@@ -1,16 +1,19 @@
 object calendar{
   def main(args: Array[String]) :Unit ={
     
+    val year = 2018
+    
     class month( id:Int, name: String, lengthInDay: Int)
     
-    val monthsName = Array[String]("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")
-    val days = Array[String]("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
+    val monthsName = Array[String]( "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")
+    val days = Array[String]( "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
+    val daysInt = Array[Int]( 1, 2, 3, 4, 5, 6, 7)
     
     def leapYear(currentYear: Int): Boolean={
       currentYear % 4 == 0
     }
     
-    def firstDayOfYear( year:Int): String ={
+  /*  def firstDayOfYear( year:Int): String ={
       var day = ""
       if( year == 2018)
         day = days(0)
@@ -20,17 +23,36 @@ object calendar{
       }
       if( year < 2018){
         val numberOfLeapYears = ( ( year - 2020) / 4).abs
-        day = days( ( ( year - 2) - numberOfLeapYears) % 7) 
+        day = days( (( ( year - 2) - numberOfLeapYears) % 7).abs) 
+      }
+      day
+    } 
+  */
+    
+    def firstDayOfYearInt( year:Int): Int ={
+      var day = 0
+      if( year == 2018)
+        day = daysInt(0)
+      if( year > 2018){
+        val numberOfLeapYears = ( year - 2016) / 4 
+        day = ( ( year % 2018 + numberOfLeapYears) % 7)  
+      }
+      if( year < 2018){
+        val numberOfLeapYears = ( ( year - 2020) / 4).abs
+        day = ( ( ( ( year - 2) - numberOfLeapYears) % 7).abs) 
       }
       day
     }
     
-    def firstDayOfMonth( firstDayOfYear: String, monthsId: Int): String ={
-      
-      "asd"
+    def firstDayOfMonth( firstDayOfYear: Int, monthsId: Int): Int ={
+      var day = firstDayOfYear
+      for( previousMonths <- 0 to monthsId){
+        day = ( monthLengthById(previousMonths, leapYear(year)) - 28 + day) % 7
+      }
+      day
     }
     
-    def monthLengthByName( monthsName: String, leapYear: Boolean) :Int ={
+ /*   def monthLengthByName( monthsName: String, leapYear: Boolean) :Int ={
       var monthLength = 30
       if( monthsName == "January" || monthsName == "March" || monthsName == "May" || monthsName == "July"
          || monthsName == "August" || monthsName == "October" || monthsName == "December" )
@@ -42,15 +64,16 @@ object calendar{
       }
       monthLength     
     }
+ */
     
     def monthLengthById( id: Int, leapYear: Boolean) :Int ={
       var monthLength = 30
-      if( id == 2){
+      if( id == 1){
         monthLength = 28
         if( leapYear == true)
           monthLength = 29
       }
-      if( ((id < 8) && (id % 2 == 1)) || ((id >= 8) && (id % 2 == 0) ))
+      else if( ((id < 7) && (id % 2 == 0)) || ((id >= 7) && (id % 2 == 1) ))
         monthLength = 31
       monthLength
     }
@@ -64,12 +87,22 @@ object calendar{
       headline
     }
     
-    def displayMonth( monthName: String, firstDay: String): Array[String] ={
-      var display = new Array[String](49)
+    def displayMonth( monthId: Int, firstDay: Int): String ={
+      var display = ""
+      display = "   1  2  3  4  5  6 \n7  8  9  10 11 12 13 \n"
+      display+= "14 15 16 17 18 19 20 \n21 22 23 24 25 26 27\n28 29 30"
       display
     }
     
-    for(i <- 0 to 1)
-      println(displayHeadline( monthsName(1), i))
+    def calendar(year: Int): Unit ={
+      for(i <- monthsName)
+        for(j <- 0 to 1)
+          println(displayHeadline( i, j))
+    }
+    
+   // calendar(2020)
+    println(displayHeadline("January", 0))
+    println(displayHeadline("January", 1))
+    println("" + displayMonth(1,1 ))
   }
 }
