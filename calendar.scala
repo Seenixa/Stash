@@ -96,13 +96,14 @@ object calendar{
     
     def calendar(year: Int): Unit ={
       for(i <- monthsName)
-        for(j <- 0 to 1)
-          println(displayHeadline( i, j))
+        for(j <- 0 to 1){
+          println( displayHeadline( i, j))
+          if( j == 1)
+            println( displayMonth( 1, firstDayOfMonth( firstDayOfYearInt( year), 1)) + " \n" + " \n")
+        }
     }
     
-   // calendar(2020)
-    println(displayHeadline("January", 0))
-    println(displayHeadline("January", 1))
-    println("" + displayMonth(1,1 ))
+    calendar(2020)
+
   }
 }
