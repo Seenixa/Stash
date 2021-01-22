@@ -1,14 +1,11 @@
 object calendar{
   def main(args: Array[String]) :Unit ={
     
-    val year = 2021
-    
-    class month( id:Int, name: String, lengthInDay: Int)
-    
+    println("Write the year you want the calendar for.")
+    val year = scala.io.StdIn.readInt()    
     val monthsName = Array[String]( "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")
     val monthsIds = Array[Int]( 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11)
-    val days = Array[String]( "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
-    val daysInt = Array[Int]( 1, 2, 3, 4, 5, 6, 7)
+    val daysInt = Array[Int](0, 1, 2, 3, 4, 5, 6)
     
     def leapYear(currentYear: Int): Boolean={
       currentYear % 4 == 0
@@ -20,7 +17,10 @@ object calendar{
         day = daysInt(0)
       if( year > 2018){
         val numberOfLeapYears = ( year - 2016) / 4 
-        day = ( ( year % 2018 + numberOfLeapYears) % 7)  
+        if( leapYear( year) == false) 
+          day = ( ( year % 2018 + numberOfLeapYears) % 7)
+        if( leapYear( year) == true)
+          day = ( ( year % 2018 + numberOfLeapYears - 1) % 7)
       }
       if( year < 2018){
         val numberOfLeapYears = ( ( year - 2020) / 4).abs
@@ -58,7 +58,7 @@ object calendar{
       headline
     }
     
-    def displayMonth: String ={
+    def displayYear: String ={
       var display = ""
       val skip = "   "
       var previousDay = 0
@@ -90,12 +90,9 @@ object calendar{
     }
     
     def printCalendar(year: Int): Unit ={
-      println( displayMonth + " \n" + " \n")
+      println( displayYear + " \n" + " \n")
     }
-    
-
-    printCalendar(2019)
-
-
+  
+    printCalendar(year)
   }
 }
