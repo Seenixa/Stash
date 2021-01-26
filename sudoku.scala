@@ -12,7 +12,6 @@ object sudoku{
         while( checkLine( i, j, numbers) == false || checkColumn( i, j, numbers) == false || checkBox( i, j, numbers) == false)
           numbers(i)(j) = r.nextInt(9) + 1
       }
-      
       numbers
     }
     
@@ -47,8 +46,6 @@ object sudoku{
       check  
     }
     
-    
-    
     def printGame :Unit ={
       val numbers = map()
       for(i <- 0 to 8){
@@ -67,10 +64,7 @@ object sudoku{
         if( i == 8)
         print("| \n-------------------")
       }
-      
-        
     }
-    
     
     printGame
   }
