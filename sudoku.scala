@@ -22,7 +22,7 @@ object sudoku{
         if( numbers(row)(column) == numbers(row)(j))
           check = false
       }
-      check
+      true
     }
     
     def checkColumn( row :Int, column: Int, numbers: Array[Array[Int]]) :Boolean ={
@@ -31,11 +31,20 @@ object sudoku{
         if( numbers(row)(column) == numbers(i)(column))
           check = false
       }
-      check
+      true
     }
     
     def checkBox( row :Int, column: Int, numbers: Array[Array[Int]]) :Boolean ={
-      true
+      var check = true
+      for(i <- ((row / 3) * 3) to row){
+        for(j <- ((column / 3) * 3) to column)
+          if( numbers(row)(column) == numbers(i)(j)){
+            if( row != i || column != j)
+              check = false
+            print(i + " " + j + "\n")
+          }
+        }
+      check  
     }
     
     
@@ -45,14 +54,18 @@ object sudoku{
       for(i <- 0 to 8){
         if( i > 0)
           println("| \n")
+        if( i == 0 )
+          println("-------------------\n")
+        if( i == 3 || i == 6 )
+          println("════════════════════\n")
         for(j <- 0 to 8){
           if( j == 3 ||j == 6)
-            print( "||" + numbers(i)(j) )
+            print( "│" + numbers(i)(j) )
           else
             print("|" + numbers(i)(j))
         }
         if( i == 8)
-        print("|")
+        print("| \n-------------------")
       }
       
         
