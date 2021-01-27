@@ -2,53 +2,88 @@ object sudoku{
   def main(args: Array[String]) :Unit ={
     
     val r = scala.util.Random
-    
-    def map(): Array[Array[Int]] ={
-      val rows = 9
+        
+    def map: Array[Array[Int]] ={
+      val rows = 3
       val columns = 9
+      var helperNumber = 0
+      var i = -1
+      var j = -1
+      var retry = false
+      var oneToNine = scala.collection.mutable.ListBuffer[Int](1, 2, 3, 4, 5, 6, 7, 8, 9)
       var numbers = Array.ofDim[Int]( rows, columns)      
-      for(i <- 0 to 8; j <- 0 to 8){
-        numbers(i)(j) = r.nextInt(9) + 1
-        while( checkLine( i, j, numbers) == false || checkColumn( i, j, numbers) == false || checkBox( i, j, numbers) == false)
-          numbers(i)(j) = r.nextInt(9) + 1
+      while(i < 2){
+        retry = false
+        i+= 1
+        j = -1
+        oneToNine = scala.collection.mutable.ListBuffer[Int](1, 2, 3, 4, 5, 6, 7, 8, 9)
+        while(j < 8 && retry == false){
+          j+= 1
+          numbers(i)(j) = oneToNine( r.nextInt( oneToNine.length))
+          oneToNine-= (numbers(i)(j))
+          helperNumber = 0
+          while( checkBox(numbers) == false && retry == false){
+            oneToNine+= numbers(i)(j)
+            numbers(i)(j) = oneToNine( r.nextInt( oneToNine.length))
+            helperNumber+= 1
+            if( helperNumber == 100){
+              retry = true
+              i = -1
+              j = -1
+            }
+          }
+        }
       }
       numbers
     }
     
-    def checkLine( row :Int, column: Int, numbers: Array[Array[Int]]) :Boolean ={
+    def checkRow( row: Int, numbers: Array[Array[Int]]) :Boolean ={
       var check = true
-      for(j <- 0 until column){
-        if( numbers(row)(column) == numbers(row)(j))
-          check = false
-      }
-      true
-    }
-    
-    def checkColumn( row :Int, column: Int, numbers: Array[Array[Int]]) :Boolean ={
-      var check = true
-      for(i <- 0 until row){
-        if( numbers(row)(column) == numbers(i)(column))
-          check = false
-      }
-      true
-    }
-    
-    def checkBox( row :Int, column: Int, numbers: Array[Array[Int]]) :Boolean ={
-      var check = true
-      for(i <- ((row / 3) * 3) to row){
-        for(j <- ((column / 3) * 3) to column)
-          if( numbers(row)(column) == numbers(i)(j)){
-            if( row != i || column != j)
-              check = false
-            print(i + " " + j + "\n")
-          }
+      var timesNumberInRow = 0
+      for(i <- 1 to 9){
+        timesNumberInRow = 0
+        for(j <- 0 until 9){
+          if (numbers(row)(j) == i)
+            timesNumberInRow+= 1
+          if( timesNumberInRow == 2)
+            check = false
         }
-      check  
+      }
+      check
     }
     
+    def checkColumn( column :Int, numbers: Array[Array[Int]]) :Boolean ={
+      var check = true
+      var timesNumberInColumn = 0
+      for(i <- 1 to 9){
+        timesNumberInColumn = 0
+        for(j <- 0 until 3){
+          if( numbers(j)(column) == i)
+            timesNumberInColumn+= 1
+          if( timesNumberInColumn == 2)
+            check = false
+        }
+      }
+      check
+    }
+    
+    def checkBox( numbers: Array[Array[Int]]) :Boolean ={
+      var check = true
+      var timesNumberInBox = 0
+      for( i <- 1 to 9 ; j <- 0 until 3){
+        timesNumberInBox = 0
+        for(k <- 0 until 3; l <- 0 until 3){
+          if( numbers(k)(l + (j * 3)) == i)
+            timesNumberInBox+= 1
+          if( timesNumberInBox == 2)
+            check = false
+        }
+      }
+      check
+    }
     def printGame :Unit ={
-      val numbers = map()
-      for(i <- 0 to 8){
+      val numbers = map
+      for(i <- 0 to 2){
         if( i > 0)
           println("| \n")
         if( i == 0 )
@@ -63,9 +98,9 @@ object sudoku{
         }
         if( i == 8)
         print("| \n-------------------")
-      }
+      }        
     }
     
     printGame
-  }
+  }  
 }
