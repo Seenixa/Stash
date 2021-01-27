@@ -20,16 +20,17 @@ object sudoku{
         while(j < 8 && retry == false){
           j+= 1
           numbers(i)(j) = oneToNine( r.nextInt( oneToNine.length))
-          oneToNine-= (numbers(i)(j))
+          oneToNine-= numbers(i)(j)
           helperNumber = 0
-          while( checkBox(numbers) == false && retry == false){
-            oneToNine+= numbers(i)(j)
+          while( checkBox(numbers) == false && retry == false || checkRow( i, numbers) == false && retry == false){
             numbers(i)(j) = oneToNine( r.nextInt( oneToNine.length))
+            oneToNine+= numbers(i)(j)
             helperNumber+= 1
             if( helperNumber == 100){
+              println("bejon ide es megakad  " + i + "  " + j)
               retry = true
               i = -1
-              j = -1
+              numbers = Array.ofDim[Int]( rows, columns)
             }
           }
         }
@@ -42,7 +43,7 @@ object sudoku{
       var timesNumberInRow = 0
       for(i <- 1 to 9){
         timesNumberInRow = 0
-        for(j <- 0 until 9){
+        for(j <- 0 until 1){
           if (numbers(row)(j) == i)
             timesNumberInRow+= 1
           if( timesNumberInRow == 2)
