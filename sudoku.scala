@@ -141,12 +141,12 @@ object sudoku{
       check
     }
     
-    val whatever:Array[Array[Int]] = mapSegmentOne
-    val whateverTwo = mapSegmentTwo(whatever)
-    val whateverThree = mapSegmentThree(whatever, whateverTwo)
+    val firstSegment = mapSegmentOne
+    val secondSegment = mapSegmentTwo( firstSegment)
+    val thirdSegment = mapSegmentThree( firstSegment, secondSegment)
     
     def printGameOne :Unit ={
-      val numbers = whatever
+      val numbers = firstSegment
       for(i <- 0 to 2){
         if( i > 0)
           println("| \n")
@@ -162,7 +162,7 @@ object sudoku{
     }
     
     def printGameTwo :Unit ={
-      val numbers = whateverTwo
+      val numbers = secondSegment
       for(i <- 0 to 2){
         if( i > 0)
           println("| \n")
@@ -177,7 +177,7 @@ object sudoku{
       }        
     }
     def printGameThree :Unit ={
-      val numbers = whateverThree
+      val numbers = thirdSegment
       for(i <- 0 to 2){
         if( i > 0)
           println("| \n")
