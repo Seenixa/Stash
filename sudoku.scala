@@ -2,8 +2,8 @@ object sudoku{
   def main(args: Array[String]) :Unit ={
     
     val r = scala.util.Random
-        
-    def map: Array[Array[Int]] ={
+      
+    def mapSegmentOne: Array[Array[Int]] ={
       val rows = 3
       val columns = 9
       var helperNumber = 0
@@ -12,12 +12,12 @@ object sudoku{
       var retry = false
       var oneToNine = scala.collection.mutable.ListBuffer[Int](1, 2, 3, 4, 5, 6, 7, 8, 9)
       var numbers = Array.ofDim[Int]( rows, columns)      
-      while(i < 2){
+      while( i < (rows - 1)){
         retry = false
         i+= 1
         j = -1
         oneToNine = scala.collection.mutable.ListBuffer[Int](1, 2, 3, 4, 5, 6, 7, 8, 9)
-        while(j < 8 && retry == false){
+        while( j < (columns - 1) && retry == false){
           j+= 1
           numbers(i)(j) = oneToNine( r.nextInt( oneToNine.length))
           oneToNine-= numbers(i)(j)
@@ -27,8 +27,8 @@ object sudoku{
             numbers(i)(j) = oneToNine( r.nextInt( oneToNine.length))
             oneToNine-= numbers(i)(j)
             helperNumber+= 1
-            if( helperNumber == 10){
-              println("bejon ide es megakad  " + i + "  " + j)
+            if( helperNumber == 50){
+              
               retry = true
               i = -1
               numbers = Array.ofDim[Int]( rows, columns)
@@ -38,35 +38,92 @@ object sudoku{
       }
       numbers
     }
-    
-    def checkRow( row: Int, numbers: Array[Array[Int]]) :Boolean ={
-      var check = true
-      var timesNumberInRow = 0
-      for(i <- 1 to 9){
-        timesNumberInRow = 0
-        for(j <- 0 until 8){
-          if (numbers(row)(j) == i)
-            timesNumberInRow+= 1
-          if( timesNumberInRow == 2)
-            check = false
+      
+    def mapSegmentTwo( numbersFirst: Array[Array[Int]]) :Array[Array[Int]] ={
+      val rows = 3
+      val columns = 9
+      var helperNumber = 0
+      var i = -1
+      var j = -1
+      var retry = false
+      var oneToNine = scala.collection.mutable.ListBuffer[Int](1, 2, 3, 4, 5, 6, 7, 8, 9)
+      val checkOnList = oneToNine
+      var numbersSecond = Array.ofDim[Int]( rows, columns)
+      while( j < ( columns - 1)){
+        retry = false
+        j+= 1
+        i = -1
+        oneToNine = scala.collection.mutable.ListBuffer[Int](1, 2, 3, 4, 5, 6, 7, 8, 9)
+        if( oneToNine == checkOnList){
+          while( i < (rows - 1) && retry == false){
+            i+= 1
+            oneToNine-= numbersFirst(i)(j)
+          }
+          i = -1
         }
-      }
-      check
+        while( i < ( rows - 1) && retry == false){
+          i+= 1
+          numbersSecond(i)(j) = oneToNine( r.nextInt( oneToNine.length))
+          oneToNine-= numbersSecond(i)(j)
+          helperNumber = 0
+          while( checkBox(numbersSecond) == false && retry == false){
+            oneToNine+= numbersSecond(i)(j)
+            numbersSecond(i)(j) = oneToNine( r.nextInt( oneToNine.length))
+            oneToNine-= numbersSecond(i)(j)
+            helperNumber+= 1
+            if( helperNumber == 50){
+              retry = true
+              j = -1
+              numbersSecond = Array.ofDim[Int]( rows, columns)
+            }
+          }
+        }
+      } 
+      numbersSecond
     }
     
-    def checkColumn( column :Int, numbers: Array[Array[Int]]) :Boolean ={
-      var check = true
-      var timesNumberInColumn = 0
-      for(i <- 1 to 9){
-        timesNumberInColumn = 0
-        for(j <- 0 until 3){
-          if( numbers(j)(column) == i)
-            timesNumberInColumn+= 1
-          if( timesNumberInColumn == 2)
-            check = false
+    def mapSegmentThree( numbersFirst: Array[Array[Int]], numbersSecond: Array[Array[Int]]) :Array[Array[Int]] ={
+      val rows = 3
+      val columns = 9
+      var helperNumber = 0
+      var i = -1
+      var j = -1
+      var retry = false
+      var oneToNine = scala.collection.mutable.ListBuffer[Int](1, 2, 3, 4, 5, 6, 7, 8, 9)
+      val checkOnList = oneToNine
+      var numbersThird = Array.ofDim[Int]( rows, columns)
+      while( j < ( columns - 1)){
+        retry = false
+        j+= 1
+        i = -1
+        oneToNine = scala.collection.mutable.ListBuffer[Int](1, 2, 3, 4, 5, 6, 7, 8, 9)
+        if( oneToNine == checkOnList){
+          while( i < (rows - 1) && retry == false){
+            i+= 1
+            oneToNine-= numbersFirst(i)(j)
+            oneToNine-= numbersSecond(i)(j)
+          }
+          i = -1
         }
-      }
-      check
+        while( i < ( rows - 1) && retry == false){
+          i+= 1
+          numbersThird(i)(j) = oneToNine( r.nextInt( oneToNine.length))
+          oneToNine-= numbersThird(i)(j)
+          helperNumber = 0
+          while( checkBox(numbersSecond) == false && retry == false){
+            oneToNine+= numbersThird(i)(j)
+            numbersSecond(i)(j) = oneToNine( r.nextInt( oneToNine.length))
+            oneToNine-= numbersThird(i)(j)
+            helperNumber+= 1
+            if( helperNumber == 50){
+              retry = true
+              j = -1
+              numbersThird = Array.ofDim[Int]( rows, columns)
+            }
+          }
+        }
+      } 
+      numbersThird
     }
     
     def checkBox( numbers: Array[Array[Int]]) :Boolean ={
@@ -83,26 +140,62 @@ object sudoku{
       }
       check
     }
-    def printGame :Unit ={
-      val numbers = map
+    
+    val whatever:Array[Array[Int]] = mapSegmentOne
+    val whateverTwo = mapSegmentTwo(whatever)
+    val whateverThree = mapSegmentThree(whatever, whateverTwo)
+    
+    def printGameOne :Unit ={
+      val numbers = whatever
       for(i <- 0 to 2){
         if( i > 0)
           println("| \n")
         if( i == 0 )
-          println("-------------------\n")
-        if( i == 3 || i == 6 )
-          println("════════════════════\n")
+          println("═══════════════════\n")
         for(j <- 0 to 8){
           if( j == 3 ||j == 6)
             print( "│" + numbers(i)(j) )
           else
             print("|" + numbers(i)(j))
         }
-        if( i == 8)
-        print("| \n-------------------")
       }        
     }
     
-    printGame
+    def printGameTwo :Unit ={
+      val numbers = whateverTwo
+      for(i <- 0 to 2){
+        if( i > 0)
+          println("| \n")
+        if( i == 0 )
+          println("|\n═══════════════════\n")
+        for(j <- 0 to 8){
+          if( j == 3 ||j == 6)
+            print( "│" + numbers(i)(j) )
+          else
+            print("|" + numbers(i)(j))
+        }
+      }        
+    }
+    def printGameThree :Unit ={
+      val numbers = whateverThree
+      for(i <- 0 to 2){
+        if( i > 0)
+          println("| \n")
+        if( i == 0 )
+          println("|\n═══════════════════\n")
+        for(j <- 0 to 8){
+          if( j == 3 ||j == 6)
+            print( "│" + numbers(i)(j) )
+          else
+            print("|" + numbers(i)(j))
+        }
+        if( i == 2)
+         println("|\n═══════════════════\n")
+      }        
+    }
+    
+    printGameOne
+    printGameTwo
+    printGameThree
   }  
 }
