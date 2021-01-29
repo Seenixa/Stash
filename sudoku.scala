@@ -141,61 +141,65 @@ object sudoku{
       check
     }
     
-    val firstSegment = mapSegmentOne
-    val secondSegment = mapSegmentTwo( firstSegment)
-    val thirdSegment = mapSegmentThree( firstSegment, secondSegment)
+    val segmentOne = mapSegmentOne
+    val segmentTwo = mapSegmentTwo( segmentOne)
+    val segmentThree = mapSegmentThree( segmentOne, segmentTwo)
     
-    def printGameOne :Unit ={
-      val numbers = firstSegment
-      for(i <- 0 to 2){
-        if( i > 0)
-          println("| \n")
-        if( i == 0 )
-          println("═══════════════════\n")
-        for(j <- 0 to 8){
-          if( j == 3 ||j == 6)
-            print( "│" + numbers(i)(j) )
-          else
-            print("|" + numbers(i)(j))
-        }
-      }        
+    def takeOut :Array[Array[Int]] ={
+      var incompletePuzzle = Array.ofDim[Int](9, 9)
+      var akarmi = ""
+      val numberOfTakeouts = 10
+      var xCoord = 0
+      var yCoord = 0
+      var whileCounter = 0
+      for(i <- 0 until 3; j <- 0 until 9)
+        incompletePuzzle(i)(j) = segmentOne(i)(j)
+      for( i <- 3 until 6; j <- 0 until 9)
+        incompletePuzzle(i)(j) = segmentTwo(i - 3)(j)
+      for( i <- 6 until 9; j <- 0 until 9)
+        incompletePuzzle(i)(j) = segmentThree(i - 6)(j)
+      while( whileCounter < numberOfTakeouts){
+        xCoord = r.nextInt(9)
+        yCoord = r.nextInt(9)
+        if( incompletePuzzle(xCoord)(yCoord) == -1)
+          whileCounter-= 1
+        else
+          incompletePuzzle(xCoord)(yCoord) = -1
+        whileCounter+= 1
+      }  
+      incompletePuzzle   
     }
     
-    def printGameTwo :Unit ={
-      val numbers = secondSegment
-      for(i <- 0 to 2){
-        if( i > 0)
-          println("| \n")
-        if( i == 0 )
-          println("|\n═══════════════════\n")
-        for(j <- 0 to 8){
-          if( j == 3 ||j == 6)
-            print( "│" + numbers(i)(j) )
-          else
-            print("|" + numbers(i)(j))
-        }
-      }        
-    }
-    def printGameThree :Unit ={
-      val numbers = thirdSegment
-      for(i <- 0 to 2){
-        if( i > 0)
-          println("| \n")
-        if( i == 0 )
-          println("|\n═══════════════════\n")
-        for(j <- 0 to 8){
-          if( j == 3 ||j == 6)
-            print( "│" + numbers(i)(j) )
-          else
-            print("|" + numbers(i)(j))
-        }
+    def displayComplete :String ={
+      var displayAll = ""
+      var segment = mapSegmentOne
+      var start = true 
+      for( i <- 0 to 2){
+        if( i == 0)
+          segment = segmentOne
+        if( i == 1)
+          segment = segmentTwo
         if( i == 2)
-         println("|\n═══════════════════\n")
-      }        
+          segment = segmentThree
+        for( j <- 0 until 3; k <- 0 until 9){
+          if( j == 0 && start == true){
+            displayAll+= "═══════════════════\n"
+            start = false
+          }
+          if( k == 3 || k == 6 || k == 0)
+            displayAll+= "│" + segment(j)(k)
+          else
+            displayAll+= "|" + segment(j)(k)
+          if( k == 8)
+            displayAll+= "│\n"
+          if( j == 2 && k == 8)
+            displayAll+= "\n═══════════════════\n"
+        }
+      }      
+      displayAll
     }
+    for( i <- 0 until 9; j <- 0 until 9)
+    println(takeOut(i)(j))
     
-    printGameOne
-    printGameTwo
-    printGameThree
   }  
 }
