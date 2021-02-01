@@ -7,23 +7,23 @@ object forum{
     
     class topic(
       val title :String,
-      val comments :Array[comment]
+      val comments :Seq[comment]
     )
     
     class forum(
       val title :String,
-      val topics :Array[topic]
+      val topics :Seq[topic]
     )
     
-    val comments = Array[comment](
+    val comments = Seq[comment](
       new comment ("valami"),
       new comment ("semmi"),
       new comment ("akarmi")
     )
     
     val top = new topic( "valami", comments )
-    val topi = new topic( "akarmi", comments)
-    val forrum = Array[topic](
+    val topi = new topic( "akarmi", comments )
+    val forrum = Seq[topic](
       top,
       topi
     )
