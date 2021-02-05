@@ -16,8 +16,8 @@ object forums extends App {
     var title :String = "New forum", 
     var topics :Vector[topic]){
     override def toString = s"""$title
-                            |${topics(0).title}
-                            |${topics(0).comments.head}""".stripMargin
+                            |${topics.head.title}
+                            |${topics.head.comments.head}""".stripMargin
   }
 
   val f = new forum( "Forum cim", topics = Vector[topic]())
@@ -27,5 +27,5 @@ object forums extends App {
   t.comments = c +: t.comments
   f.topics = f.topics :+ t
   
-  println(s"$t")
+  println(s"$f")
 }
