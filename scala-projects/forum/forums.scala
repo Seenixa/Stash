@@ -1,34 +1,31 @@
-object forums {
-  def main(args: Array[String]) :Unit ={
+object forums extends App {
     
-    class topic(
-      val title :String,
-      var comments :Seq[String]
-    )
+  class comment( 
+    val comment :String = "New comment"){
+    override def toString = s"$comment"
+  }
+  
+  class topic( 
+    val title :String = "New topic", 
+    var comments :Seq[comment]){
+    override def toString = s"""$title
+                            |${comments.head}""".stripMargin
+  }
     
-    class forum(
-      val title :String,
-      var topics :Seq[topic]
-    )
-    
-    def createForum( title: String) :forum ={
-        val newForum = new forum( title, List[topic]())
-        newForum
-    }
-    
-    def createTopic( Forum: forum, title: String) :forum ={
-        val newTopic = new topic( title, List[String]())
-        val newList = Forum.topics:+ newTopic
-        val newForum = new forum( Forum.title, newList)
-        newForum
-    }
-    
-    def createComment( Forum: forum, Topic: topic, Comment: String) :forum ={
-        val newList = Topic.comments:+ Comment
-        val newTopic = new topic ( Topic.title, newList)
-        val newListTopic = Forum.topics:+ newTopic
-        val newForum = new forum ( Forum.title, newListTopic)
-        newForum
-    }
-  } 
+  class forum( 
+    var title :String = "New forum", 
+    var topics :Vector[topic]){
+    override def toString = s"""$title
+                            |${topics(0).title}
+                            |${topics(0).comments.head}""".stripMargin
+  }
+
+  val f = new forum( "Forum cim", topics = Vector[topic]())
+  val t = new topic( "topic cim", comments = Seq[comment]())
+  val c = new comment("barmi, akarmi")
+  
+  t.comments = c +: t.comments
+  f.topics = f.topics :+ t
+  
+  println(s"$t")
 }
