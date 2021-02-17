@@ -1,5 +1,7 @@
 object damagetest extends App{
-    
+  
+  // flat values //
+  
   class character(
     val level :Int = 0,
     val ranged :Boolean = false,
@@ -8,6 +10,10 @@ object damagetest extends App{
     val health :Float = 0,
     val armor :Float = 0,
     val magicResist :Float = 0,
+    val flatArmorPenetration :Float = 0,
+    val percentArmorPenetration :Float = 0,
+    val flatMagicPenetration :Float = 0,
+    val percentMagicPenetration :Float = 0,
     val attacksPerSecond :Float = 0,
     val criticalStrikeChance :Float = 0,
     val criticalStrikeDamage :Float = 0,
@@ -27,35 +33,45 @@ object damagetest extends App{
   )
   
   def averageDamagePerHit( champion :character, target :character) :Float ={
-    var damage = champion.attackDamage * (1 +((champion.criticalStrikeChance / 100)) * ( champion.criticalStrikeDamage / 100))
-    println(s"""$damage
-            |
-            |""".stripMargin)
+    val physicalDamageReduction = 100 / (100 + (target.armor * ((100 - champion.percentArmorPenetration) / 100)) - champion.flatArmorPenetration)
+    val magicDamageReduction = 100 / (100 + (target.magicResist * ((100 - champion.percentMagicPenetration) / 100)) - champion.flatMagicPenetration)
+    var damage = champion.attackDamage * (1 + ((champion.criticalStrikeChance / 100)) * ( champion.criticalStrikeDamage / 100)) * physicalDamageReduction
+    val witsEndDamage = (( champion.level * 3.8F) + 15) * magicDamageReduction
+    val nashorsToothDamage = (( champion.abilityPower * 0.2F) + 15) * magicDamageReduction
+    val guinsooOnHitDamage = champion.criticalStrikeChance * 2
+    var borkDamage = 0F
     if( champion.mods.botrk == true){
-      if( champion.ranged == true)
-        damage += ( target.health * 0.06).toFloat
-      if( champion.ranged == false)
-        damage += ( target.health * 0.1).toFloat
+      if( champion.ranged == true){
+        borkDamage = ( target.health * 0.06F) * physicalDamageReduction
+      }
+      else{
+        borkDamage = ( target.health * 0.1F) * physicalDamageReduction
+      }
+      damage += borkDamage
     }
     if( champion.mods.nashorsTooth == true)
-      damage += ( champion.abilityPower * 0.2).toFloat + 15
+      damage += nashorsToothDamage
     if( champion.mods.witsEnd == true)
-      damage += (( champion.level * 3.8).toFloat + 15)
+      damage += witsEndDamage
     if( champion.mods.guinsoosRageblade == true){
-      damage = champion.attackDamage + ( champion.criticalStrikeChance * 2) + ((champion.criticalStrikeChance * 2) / 3)
+      damage = guinsooOnHitDamage + ( guinsooOnHitDamage / 3) + (champion.attackDamage * physicalDamageReduction)
       if( champion.mods.nashorsTooth == true)
-        damage += (( champion.abilityPower * 0.2) + 15).toFloat + ((( champion.abilityPower * 0.2) + 15) / 3).toFloat
+        damage += nashorsToothDamage + ( nashorsToothDamage / 3)
       if( champion.mods.witsEnd == true)
-        damage += (( champion.level * 3.8) + 15).toFloat + ((( champion.level * 3.8) + 15) / 3).toFloat
+        damage += witsEndDamage + ( witsEndDamage / 3)
       if( champion.mods.botrk == true){
-        if( champion.ranged == true)
-          damage += ( target.health * 0.06).toFloat + ((( target.health * 0.06) / 3).toFloat)
-        if( champion.ranged == false)
-          damage += ( target.health * 0.1).toFloat + ((( target.health * 0.1) / 3).toFloat)
+          damage += (borkDamage + ( borkDamage / 3)).toFloat
       }  
     }  
     damage 
   }
+  
+  def autoAttackDamagePerSecond( champion :character, target :character) :Float ={
+    val singleHit = averageDamagePerHit( champion, target)
+    var damagePerSec = champion.attacksPerSecond * singleHit
+    damagePerSec
+  }
+  
   
   val mychamp = new character(     
     level = 10,
@@ -63,17 +79,22 @@ object damagetest extends App{
     attackDamage = 100,
     abilityPower = 100,
     health = 1000,
-    armor = 10,
+    armor = 0,
     magicResist = 0,
-    attacksPerSecond = 0,
-    criticalStrikeChance = 50,
+    flatArmorPenetration = 0,
+    percentArmorPenetration = 0,
+    flatMagicPenetration = 0,
+    percentMagicPenetration = 0,
+    attacksPerSecond = 1.5F,
+    criticalStrikeChance = 60,
     criticalStrikeDamage = 100,
     mods = new modifiers(
-      botrk = false,
-      nashorsTooth = false,
-      witsEnd = false,
-      guinsoosRageblade = true
+      botrk = true,
+      nashorsTooth = true,
+      witsEnd = true,
+      guinsoosRageblade = false
       )
     )
-  println(s"${averageDamagePerHit(mychamp, mychamp)}")
+  println(s"""AA damage: ${averageDamagePerHit(mychamp, mychamp).toInt}
+              |DPS: ${autoAttackDamagePerSecond(mychamp, mychamp).toInt}""".stripMargin)
 }
