@@ -1,6 +1,5 @@
 object damagetest extends App{
   import scala.collection.mutable.ArrayBuffer
-  // flat values //
   
   class character(
     val level :Int = 0,
@@ -86,7 +85,7 @@ object damagetest extends App{
     var hits = ArrayBuffer[Float]()
     var remainingHealth = target.health
     while( damageSoFar < target.health){
-      thisHit = averageDamagePerHit( champion, target.armor, target.magicResist, remainingHealth)
+      thisHit = averageDamagePerHit( champion, target.armor, target.magicResist, remainingHealth) * 1.15F
       damageSoFar += thisHit
       remainingHealth = target.health - damageSoFar
       hits += thisHit
@@ -97,11 +96,8 @@ object damagetest extends App{
   val mychamp = new character(     
     level = 10,
     ranged = false,
-    attackDamage = 100,
+    attackDamage = 200,
     abilityPower = 100,
-    health = 1500,
-    armor = 100,
-    magicResist = 0,
     flatArmorPenetration = 0,
     percentArmorPenetration = 0,
     flatMagicPenetration = 0,
@@ -114,42 +110,24 @@ object damagetest extends App{
       nashorsTooth = false,
       witsEnd = false,
       guinsoosRageblade = true,
-      krakenSlayer = true
+      krakenSlayer = false
       )
     )
   
   val targetChamp = new character( 
-    level = 10,
-    ranged = false,
-    attackDamage = 100,
-    abilityPower = 100,
     health = 4000,
     armor = 300,
     magicResist = 0,
-    flatArmorPenetration = 0,
-    percentArmorPenetration = 0,
-    flatMagicPenetration = 0,
-    percentMagicPenetration = 0,
-    attacksPerSecond = 1.5F,
-    criticalStrikeChance = 60,
-    criticalStrikeDamage = 100,
-    mods = new modifiers(
-      botrk = true,
-      nashorsTooth = false,
-      witsEnd = false,
-      guinsoosRageblade = true,
-      krakenSlayer = true
-      )
     )
   println(s"""AA damage: ${averageDamagePerHit(mychamp, targetChamp.armor, targetChamp.magicResist, targetChamp.health).toInt}
               |DPS: ${autoAttackDamagePerSecond(mychamp, targetChamp).toInt}""".stripMargin)
-  var noHits = 0
+  var numberOfHits = 0
   for( hits <- damageUntilKill(mychamp, targetChamp)){
-    noHits += 1
+    numberOfHits += 1
     println(s"Damage on hit: ${hits.toInt}")
   }
-  println(s"Number of hits to kill: $noHits")
-  val timeUntilKill = noHits / mychamp.attacksPerSecond
+  println(s"Number of hits to kill: $numberOfHits")
+  val timeUntilKill = numberOfHits / mychamp.attacksPerSecond
   println(s"Time it takes to kill: ${(timeUntilKill * 10).toInt / 10F}  seconds")
 }
 
