@@ -1,5 +1,5 @@
 object damagetest extends App{
-  
+  import scala.collection.mutable.ArrayBuffer
   // flat values //
   
   class character(
@@ -21,7 +21,8 @@ object damagetest extends App{
       botrk = false,
       nashorsTooth = false,
       witsEnd = false,
-      guinsoosRageblade = false
+      guinsoosRageblade = false,
+      krakenSlayer = false
       )
     )
   
@@ -29,26 +30,28 @@ object damagetest extends App{
     val botrk :Boolean = false,
     val nashorsTooth :Boolean = false,
     val witsEnd :Boolean = false,
-    val guinsoosRageblade :Boolean = false 
+    val guinsoosRageblade :Boolean = false,
+    val krakenSlayer :Boolean = false
   )
   
-  def averageDamagePerHit( champion :character, target :character) :Float ={
-    val physicalDamageReduction = 100 / (100 + (target.armor * ((100 - champion.percentArmorPenetration) / 100)) - champion.flatArmorPenetration)
-    val magicDamageReduction = 100 / (100 + (target.magicResist * ((100 - champion.percentMagicPenetration) / 100)) - champion.flatMagicPenetration)
+  def averageDamagePerHit( champion :character, targetArmor :Float, targetMagicResist :Float, targetHealth :Float) :Float ={
+    val physicalDamageReduction = 100 / (100 + (targetArmor * ((100 - champion.percentArmorPenetration) / 100)) - champion.flatArmorPenetration)
+    val magicDamageReduction = 100 / (100 + (targetMagicResist * ((100 - champion.percentMagicPenetration) / 100)) - champion.flatMagicPenetration)
     var damage = champion.attackDamage * (1 + ((champion.criticalStrikeChance / 100)) * ( champion.criticalStrikeDamage / 100)) * physicalDamageReduction
     val witsEndDamage = (( champion.level * 3.8F) + 15) * magicDamageReduction
     val nashorsToothDamage = (( champion.abilityPower * 0.2F) + 15) * magicDamageReduction
-    val guinsooOnHitDamage = champion.criticalStrikeChance * 2
+    val guinsooOnHitDamage = (champion.criticalStrikeChance * 2) * physicalDamageReduction
+    val krakenSlayerDamage = (60 + (0.45F * champion.attackDamage)) / 3
     var borkDamage = 0F
     if( champion.mods.botrk == true){
-      if( champion.ranged == true){
-        borkDamage = ( target.health * 0.06F) * physicalDamageReduction
-      }
-      else{
-        borkDamage = ( target.health * 0.1F) * physicalDamageReduction
-      }
+      if( champion.ranged == true)
+        borkDamage = ( targetHealth * 0.06F) * physicalDamageReduction
+      else
+        borkDamage = ( targetHealth * 0.1F) * physicalDamageReduction
       damage += borkDamage
     }
+    if( champion.mods.krakenSlayer == true)
+      damage += krakenSlayerDamage
     if( champion.mods.nashorsTooth == true)
       damage += nashorsToothDamage
     if( champion.mods.witsEnd == true)
@@ -59,27 +62,45 @@ object damagetest extends App{
         damage += nashorsToothDamage + ( nashorsToothDamage / 3)
       if( champion.mods.witsEnd == true)
         damage += witsEndDamage + ( witsEndDamage / 3)
-      if( champion.mods.botrk == true){
-          damage += (borkDamage + ( borkDamage / 3)).toFloat
-      }  
+      if( champion.mods.botrk == true)
+        damage += (borkDamage + ( borkDamage / 3)).toFloat
+      if( champion.mods.krakenSlayer == true)
+        damage += krakenSlayerDamage + ( krakenSlayerDamage / 3)
+        
     }  
     damage 
   }
   
   def autoAttackDamagePerSecond( champion :character, target :character) :Float ={
-    val singleHit = averageDamagePerHit( champion, target)
+    val physicalDamageReduction = 100 / (100 + (target.armor * ((100 - champion.percentArmorPenetration) / 100)) - champion.flatArmorPenetration)
+    var borkDamageMax = 0F
+    var borkDamageAverage = 0F
+    val singleHit = averageDamagePerHit( champion, target.armor, target.magicResist, target.health / 2)
     var damagePerSec = champion.attacksPerSecond * singleHit
     damagePerSec
   }
   
+  def damageUntilKill( champion : character, target :character) :ArrayBuffer[Float] ={
+    var thisHit = 0F
+    var damageSoFar = 0F
+    var hits = ArrayBuffer[Float]()
+    var remainingHealth = target.health
+    while( damageSoFar < target.health){
+      thisHit = averageDamagePerHit( champion, target.armor, target.magicResist, remainingHealth)
+      damageSoFar += thisHit
+      remainingHealth = target.health - damageSoFar
+      hits += thisHit
+    }
+    hits
+  }
   
   val mychamp = new character(     
     level = 10,
     ranged = false,
     attackDamage = 100,
     abilityPower = 100,
-    health = 1000,
-    armor = 0,
+    health = 1500,
+    armor = 100,
     magicResist = 0,
     flatArmorPenetration = 0,
     percentArmorPenetration = 0,
@@ -90,11 +111,50 @@ object damagetest extends App{
     criticalStrikeDamage = 100,
     mods = new modifiers(
       botrk = true,
-      nashorsTooth = true,
-      witsEnd = true,
-      guinsoosRageblade = false
+      nashorsTooth = false,
+      witsEnd = false,
+      guinsoosRageblade = true,
+      krakenSlayer = true
       )
     )
-  println(s"""AA damage: ${averageDamagePerHit(mychamp, mychamp).toInt}
-              |DPS: ${autoAttackDamagePerSecond(mychamp, mychamp).toInt}""".stripMargin)
+  
+  val targetChamp = new character( 
+    level = 10,
+    ranged = false,
+    attackDamage = 100,
+    abilityPower = 100,
+    health = 4000,
+    armor = 300,
+    magicResist = 0,
+    flatArmorPenetration = 0,
+    percentArmorPenetration = 0,
+    flatMagicPenetration = 0,
+    percentMagicPenetration = 0,
+    attacksPerSecond = 1.5F,
+    criticalStrikeChance = 60,
+    criticalStrikeDamage = 100,
+    mods = new modifiers(
+      botrk = true,
+      nashorsTooth = false,
+      witsEnd = false,
+      guinsoosRageblade = true,
+      krakenSlayer = true
+      )
+    )
+  println(s"""AA damage: ${averageDamagePerHit(mychamp, targetChamp.armor, targetChamp.magicResist, targetChamp.health).toInt}
+              |DPS: ${autoAttackDamagePerSecond(mychamp, targetChamp).toInt}""".stripMargin)
+  var noHits = 0
+  for( hits <- damageUntilKill(mychamp, targetChamp)){
+    noHits += 1
+    println(s"Damage on hit: ${hits.toInt}")
+  }
+  println(s"Number of hits to kill: $noHits")
+  val timeUntilKill = noHits / mychamp.attacksPerSecond
+  println(s"Time it takes to kill: ${(timeUntilKill * 10).toInt / 10F}  seconds")
 }
+
+
+
+
+
+
