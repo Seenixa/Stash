@@ -1,6 +1,34 @@
 object damagetest extends App{
   import scala.collection.mutable.ArrayBuffer
   
+  sealed trait Item
+  case object guinsoosRageblade extends Item
+  case object bladeOfTheRuinedKing extends Item
+  case object krakenSlayer extends Item
+  case object galeforce extends Item
+  case object immortalShieldBow extends Item
+  case object runaansHurricane extends Item
+  case object rapidFireCanoon extends Item
+  case object infinityEdge extends Item
+  case object lordDominik extends Item
+  case object mortalReminder extends Item
+  case object stormRazer extends Item
+  case object phantomDancer extends Item
+  case object essenceReaver extends Item
+  case object navoriQuickblades extends Item
+  
+  class itemValues(
+    val attackDamage :Float = 0,
+    val abilityPower :Float = 0,
+    val flatArmorPenetration :Float = 0,
+    val percentArmorPenetration :Float = 0,
+    val flatMagicPenetration :Float = 0,
+    val percentMagicPenetration :Float = 0,
+    val attackSpeed :Float = 0,
+    val criticalStrikeChance :Float = 0,
+    val criticalStrikeDamage :Float = 0,
+  )
+  
   class character(
     val level :Int = 0,
     val ranged :Boolean = false,
@@ -23,7 +51,27 @@ object damagetest extends App{
       guinsoosRageblade = false,
       krakenSlayer = false
       )
-    )
+    ) {
+    val items = ArrayBuffer[Item]()
+    
+    def addItem( item: Item) :Unit ={
+      items += item
+    }
+    
+    def removeItem( item: Item) :Unit ={
+      items -= item
+    }
+    
+    def clearInventory() :Unit ={
+      items.clear()
+    }
+    
+    override def toString(): String = {
+      s"""
+      |Items:   $items
+      """.stripMargin
+    }   
+  }
   
   class modifiers(
     val botrk :Boolean = false,
@@ -85,7 +133,7 @@ object damagetest extends App{
     var hits = ArrayBuffer[Float]()
     var remainingHealth = target.health
     while( damageSoFar < target.health){
-      thisHit = averageDamagePerHit( champion, target.armor, target.magicResist, remainingHealth) * 1.15F
+      thisHit = averageDamagePerHit( champion, target.armor, target.magicResist, remainingHealth)
       damageSoFar += thisHit
       remainingHealth = target.health - damageSoFar
       hits += thisHit
@@ -119,6 +167,96 @@ object damagetest extends App{
     armor = 300,
     magicResist = 0,
     )
+  
+  val IE = new itemValues(
+    attackDamage = 70,
+    criticalStrikeChance = 20,
+    criticalStrikeDamage = 35
+  )
+  
+  val BOTRK = new itemValues(
+    attackDamage = 40,
+    attackSpeed = 25
+  )
+  
+  val GALEFORCE = new itemValues(
+    attackDamage = 60,
+    attackSpeed = 20,
+    criticalStrikeChance = 20
+  )
+  
+  val ISB = new itemValues(
+    attackDamage = 55,
+    attackSpeed = 20, 
+    criticalStrikeChance = 20
+  )
+  
+  val KRAKEN = new itemValues(
+    attackDamage = 65,
+    attackSpeed = 25,
+    criticalStrikeChance = 20,
+  )
+  
+  val HURRICANE = new itemValues(
+    attackSpeed = 45,
+    criticalStrikeChance = 20,
+  )
+
+  val GUINSOO = new itemValues(
+    attackSpeed = 45,
+    criticalStrikeChance = 20,
+  )  
+  
+  val RFC = new itemValues(
+    attackSpeed = 35,
+    criticalStrikeChance = 20,
+  )  
+  
+  val MORTALREMINDER = new itemValues(
+    attackDamage = 25,
+    attackSpeed = 25,
+    criticalStrikeChance = 20,
+  )  
+  
+  val PHANTOMDANCER = new itemValues(
+    attackDamage = 20,
+    attackSpeed = 25,
+    criticalStrikeChance = 20,
+  )  
+  
+  val STORMRAZER = new itemValues(
+    attackDamage = 40,
+    attackSpeed = 15,
+    criticalStrikeChance = 20,
+  )
+  
+  val ESSENCEREAVER = new itemValues(
+    attackDamage = 65,
+    criticalStrikeChance = 20,
+  )  
+  
+  val LORDDOMINIK = new itemValues(
+    attackDamage = 65,
+    percentArmorPenetration = 35,
+    criticalStrikeChance = 20,
+  )  
+  
+  val SERYLDA = new itemValues(
+    attackDamage = 45,
+    percentArmorPenetration = 30,
+  )
+
+  val QUICKBLADES = new itemValues(
+    attackDamage = 60,
+    criticalStrikeChance = 20,
+  )  
+  
+  def addItemValues( champion :character) :character ={
+    var champWithItems = champion
+    champWithItems
+  }
+  
+  
   println(s"""AA damage: ${averageDamagePerHit(mychamp, targetChamp.armor, targetChamp.magicResist, targetChamp.health).toInt}
               |DPS: ${autoAttackDamagePerSecond(mychamp, targetChamp).toInt}""".stripMargin)
   var numberOfHits = 0
@@ -129,6 +267,11 @@ object damagetest extends App{
   println(s"Number of hits to kill: $numberOfHits")
   val timeUntilKill = numberOfHits / mychamp.attacksPerSecond
   println(s"Time it takes to kill: ${(timeUntilKill * 10).toInt / 10F}  seconds")
+  
+  mychamp.addItem(krakenSlayer)
+  println(mychamp)
+  
+  
 }
 
 
