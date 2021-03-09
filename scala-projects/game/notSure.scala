@@ -4,90 +4,101 @@ object game extends App{
   
   class character(
     var level :Int = 1,
-    var damage :Int = 0,
-    var armor :Float = 0,
-    var speed :Int = 0,
-    var maxHealth :Int = 500,
-    var health :Int = 0,
-    var maxMana :Int = 0,
-    var currentMana :Int = 0,
+    var armor :Int = 0,
+    var strength :Int = 10,
+    var agility :Int = 10,
+    var intelligence :Int = 10,
+    var vitality :Int = 10
     )
   {
-    def basicAttackDamage :Int ={
-      var hit = damage + random.nextInt(damage + (damage / 5))
-      if( random.nextFloat() < 0.25F)
-      hit *= 2
-      hit
-    }
-    
-    def getHit( amount :Int) ={
-      health -= amount
-    }
-    
+    var health = 10 * vitality
+    this.health = health
   }
   
-  class enemy(
-    var level :Int = 1,
-    var health :Int = 0,
-    var damage :Int = 0,
-    var armor :Float = 0,
-    var speed :Int = 0,
-    var abilityDamage :Int = 0
-  )
-  
-  class mage(
-    var fireball :Int = 0,
-    var frostbolt :Int = 0,
-    var arcaneBlast :Int = 0,
-    var earthFist :Int = 0,
-    var stats :character = new character(
-      damage = 2,
-      armor = 5,
-      speed = 3
-    )
-  ){
-    fireball = stats.level * 5
-    frostbolt = stats.level * 4
-    arcaneBlast = 10 + stats.level * 3
-    earthFist = stats.damage * 3      
-    }
-  
-    
   class warrior(
     var shieldBash :Int = 0,
-    var shieldBlock :Int = 0,
-    var stats :character = new character(
-      damage = 3,
-      armor = 10,
-      speed = 1
-    )
-  ){
+    var shieldWall :Int = 0
+  ) extends character
+  {
+    var hitDamage = strength * 2
+    this.hitDamage = hitdamage
+    
+    def updateValues :Unit = {
+      shieldBash = strength + armor
+      shieldWall = (health * 125) / 100
+      health = vitality * 10
+      hitDamage = strength * 2
+    }
+    
+    override def toString = s"""level:        $level
+                               |strength:     $strength
+                               |agility:      $agility
+                               |intelligence: $intelligence
+                               |vitality:     $vitality
+                               |health:       $health""".stripMargin
     
   }
   
   class rogue(
-    var abilityDamage :Int = 0,
-    var abilityTwoDamage :Int = 0,
-    var stats :character = new character(
-      damage = 4,
-      armor = 6,
-      speed = 6
-    )
-  ){
+    var poisonDuration :Int,
+    var poisonDamage :Int
+  ) extends character
+  {
+    var hitDamage = strength + agility
+    this.hitDamage = hitdamage    
     
+    
+    def updateValues :Unit = {
+      poisonDamage = agility
+      poisonDuration = agility / 10
+      health = vitality * 10
+      hitDamage = strength + agility
+    }    
+    
+    override def toString = s"""level:        $level
+                               |strength:     $strength
+                               |agility:      $agility
+                               |intelligence: $intelligence
+                               |vitality:     $vitality
+                               |health:       $health""".stripMargin 
     
   }
   
-  class statusEffect(
-    var poison :Boolean = false,
-    var chill :Boolean = false,
-    var burn :Boolean = false
-  ){
+  class mage(
+    var fireballDamage :Int,
+    var fireballBurnDuration :Int,
+    var frostboltDamage :Int,
+    var frostboltChillDuration :Int
+  ) extends character
+  {
+    var hitDamage = strength * 2
+    this.hitDamage = hitdamage
+    
+    def updateValues :Unit = {
+      fireballDamage = intelligence * 5
+      frostboltDamage = intelligence * 3
+      fireballBurnDuration = intelligence / 10
+      frostboltChillDuration = intelligence / 10
+      health = vitality * 10
+      hitDamage = intelligence
+    }  
+    
+    override def toString = s"""level:        $level
+                               |strength:     $strength
+                               |agility:      $agility
+                               |intelligence: $intelligence
+                               |vitality:     $vitality
+                               |health:       $health""".stripMargin    
+
 
   }
+  
+  var Whoever = new warrior()
+  Whoever.updateValues
+  Whoever.vitality = 25
+  println(s"$Whoever \nThe value of shield Wall is: ${Whoever.shieldWall}")
+  
+  
+  
+  
 }
-  
-  
-  
-    
-  
