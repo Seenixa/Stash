@@ -21,7 +21,7 @@ object game extends App{
   ) extends character
   {
     var hitDamage = strength * 2
-    this.hitDamage = hitdamage
+    this.hitDamage = hitDamage
     
     def updateValues :Unit = {
       shieldBash = strength + armor
@@ -45,7 +45,7 @@ object game extends App{
   ) extends character
   {
     var hitDamage = strength + agility
-    this.hitDamage = hitdamage    
+    this.hitDamage = hitDamage    
     
     
     def updateValues :Unit = {
@@ -72,7 +72,7 @@ object game extends App{
   ) extends character
   {
     var hitDamage = strength * 2
-    this.hitDamage = hitdamage
+    this.hitDamage = hitDamage
     
     def updateValues :Unit = {
       fireballDamage = intelligence * 5
