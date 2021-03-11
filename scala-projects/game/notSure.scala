@@ -8,7 +8,8 @@ object game extends App{
     var strength :Int = 10,
     var agility :Int = 10,
     var intelligence :Int = 10,
-    var vitality :Int = 10
+    var vitality :Int = 21,
+    var itemValues :itemValues = new itemValues()
     )
   {
     var health = 10 * vitality
@@ -17,16 +18,24 @@ object game extends App{
   
   class warrior(
     var shieldBash :Int = 0,
-    var shieldWall :Int = 0
+    var shieldWall :Int = 0,
+    
   ) extends character
   {
     var hitDamage = strength * 2
     this.hitDamage = hitDamage
     
-    def updateValues :Unit = {
+    
+    def updateStats( level :Int) :Unit ={
+      this.level = level
+      this.armor = 20 + itemValues.armor
+      this.strength = 50 + (level * 5) + itemValues.strength
+      this.agility = 20 + (level * 3) + itemValues.agility
+      this.intelligence = 10 + (level * 2) + itemValues.intelligence
+      this.vitality = 30 + (level * 10) + itemValues.vitality
       shieldBash = strength + armor
-      shieldWall = (health * 125) / 100
       health = vitality * 10
+      shieldWall = (health * 0.25).toInt
       hitDamage = strength * 2
     }
     
@@ -71,7 +80,7 @@ object game extends App{
     var frostboltChillDuration :Int
   ) extends character
   {
-    var hitDamage = strength * 2
+    var hitDamage = intelligence
     this.hitDamage = hitDamage
     
     def updateValues :Unit = {
@@ -92,10 +101,37 @@ object game extends App{
 
 
   }
+ 
+  class item(
+    val id :Int = 0
+  ) extends itemValues
+  {
+    def addItem( itemId : Int, char: character) :Unit ={
+      itemId match{
+        case 1 => char.itemValues.strength += 10
+        case 2 => char.itemValues.agility += 10
+        case 3 => char.itemValues.intelligence += 10
+        case 4 => char.itemValues.vitality += 10
+        case 5 => char.itemValues.armor += 10
+        case _ => println("Dude wtf?")
+      }
+    }   
+  }
   
+  class itemValues(
+    var strength :Int = 0,
+    var agility :Int = 0,
+    var intelligence :Int = 0,
+    var vitality :Int = 0,
+    var armor :Int = 0
+  )
+  
+  val whatever = new item(1)
   var Whoever = new warrior()
-  Whoever.updateValues
-  Whoever.vitality = 25
+  whatever.addItem( whatever.id, Whoever)
+  Whoever.updateStats(level = 10)
+  
+  
   println(s"$Whoever \nThe value of shield Wall is: ${Whoever.shieldWall}")
   
   
