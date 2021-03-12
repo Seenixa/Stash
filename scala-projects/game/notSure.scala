@@ -1,15 +1,16 @@
 object game extends App{
   import scala.collection.mutable.ArrayBuffer
   val random = scala.util.Random
+  var idCounter = 0
   
   class character(
+    var classId :Int = 0,
     var level :Int = 1,
     var armor :Int = 0,
     var strength :Int = 10,
     var agility :Int = 10,
     var intelligence :Int = 10,
     var vitality :Int = 21,
-    var itemValues :itemValues = new itemValues()
     )
   {
     var health = 10 * vitality
@@ -17,7 +18,7 @@ object game extends App{
     
     def levelUp :Unit ={
       this.level += 1
-    }
+    } 
   }
   
   class warrior(
@@ -27,14 +28,15 @@ object game extends App{
   {
     var hitDamage = strength * 2
     this.hitDamage = hitDamage
+    this.classId = 1
         
     def updateStats( level :Int) :Unit ={
       this.level = level
-      this.armor = 20 + itemValues.armor
-      this.strength = 50 + (level * 5) + itemValues.strength
-      this.agility = 15 + (level * 3) + itemValues.agility
-      this.intelligence = 10 + (level * 2) + itemValues.intelligence
-      this.vitality = 30 + (level * 10) + itemValues.vitality
+      this.armor = 20 
+      this.strength = 50 + (level * 5)
+      this.agility = 15 + (level * 3) 
+      this.intelligence = 10 + (level * 2)
+      this.vitality = 30 + (level * 10) 
       health = vitality * 10
       hitDamage = strength * 2
       shieldBash = strength + armor
@@ -56,15 +58,16 @@ object game extends App{
   ) extends character
   {
     var hitDamage = strength + agility
-    this.hitDamage = hitDamage    
+    this.hitDamage = hitDamage
+    this.classId = 2
       
     def updateStats( level :Int) :Unit ={
       this.level = level
-      this.armor = 10 + itemValues.armor
-      this.strength = 20 + (level * 2) + itemValues.strength
-      this.agility = 50 + (level * 5) + itemValues.agility
-      this.intelligence = 10 + (level * 3) + itemValues.intelligence
-      this.vitality = 20 + (level * 5) + itemValues.vitality
+      this.armor = 10
+      this.strength = 20 + (level * 2)
+      this.agility = 50 + (level * 5) 
+      this.intelligence = 10 + (level * 3)
+      this.vitality = 20 + (level * 5)
       health = vitality * 10
       hitDamage = strength + agility
       poisonDamage = agility
@@ -89,14 +92,15 @@ object game extends App{
   {
     var hitDamage = intelligence
     this.hitDamage = hitDamage
+    this.classId = 3
      
     def updateStats( level :Int) :Unit ={
       this.level = level
-      this.armor = 5 + itemValues.armor
-      this.strength = 10 + (level * 2) + itemValues.strength
-      this.agility = 20 + (level * 2) + itemValues.agility
-      this.intelligence = 50 + (level * 5) + itemValues.intelligence
-      this.vitality = 15 + (level * 4) + itemValues.vitality
+      this.armor = 5
+      this.strength = 10 + (level * 2)
+      this.agility = 20 + (level * 2)
+      this.intelligence = 50 + (level * 5)
+      this.vitality = 15 + (level * 4) 
       health = vitality * 10
       hitDamage = intelligence
       fireballDamage = intelligence * 5
@@ -115,67 +119,55 @@ object game extends App{
   }
  
   class item(
-    val id :Int = 0
-  ) extends itemValues
-  {
-    var itemName :String = ""
-    id match{
-      case 1 => itemName = "Gauntlets of strength"
-      case 2 => itemName = "Slippers of agility"
-      case 3 => itemName = "Robe of the magi"
-      case 4 => itemName = "Ruby crystal"
-      case 5 => itemName = "Chainmail"
-      case _ => println("Dude wtf?")
+    val name :String,
+    val strength :Int = 0,
+    val agility :Int = 0,
+    val intelligence :Int = 0,
+    val vitality :Int = 0,
+    val armor :Int = 0
+  ){
+    def nextId :Int ={
+      idCounter += 1
+      idCounter
     }
+    val id = nextId
     
-    def addItem( itemId : Int, char: character) :Unit ={
-      itemId match{
-        case 1 => char.itemValues.strength += 10
-        case 2 => char.itemValues.agility += 10
-        case 3 => char.itemValues.intelligence += 10
-        case 4 => char.itemValues.vitality += 10
-        case 5 => char.itemValues.armor += 10
-        case _ => println("Like... dude? Adding a non-exsistent item wth?")
-      }
-    }   
+    override def toString = s"""Name:         $name
+                               |Id:           $id
+                               |Strength:     $strength
+                               |Agility:      $agility
+                               |Intelligence: $intelligence
+                               |Vitality:     $vitality
+                               |Armor:        $armor""".stripMargin 
   }
-  
-  class itemValues(
-    var strength :Int = 0,
-    var agility :Int = 0,
-    var intelligence :Int = 0,
-    var vitality :Int = 0,
-    var armor :Int = 0
+
+  val items = Seq(
+    new item( name = "Gauntlets of Strength", strength = 10),
+    new item( name = "Slippers of agility", agility = 10),
+    new item( name = "Robes of the magi", intelligence = 10),
+    new item( name = "Chainmail", armor = 20)
   )
-    
-  def createWarrior :warrior ={
-    val yourCharacter = new warrior()
-    yourCharacter.updateStats( level = 1)
-    yourCharacter
-  }
   
-  def createRogue :rogue ={
-    val yourCharacter = new rogue()
-    yourCharacter.updateStats( level = 1)
+  def chooseYourCharacter :character ={
+    println(s"""Pick your character!
+                |1. Warrior
+                |2. Rogue
+                |3. Mage""".stripMargin)
+    var choice = 2
+    var yourCharacter = new character()
+    if( choice == 1)
+      yourCharacter = new warrior()
+    if( choice == 2)
+      yourCharacter = new rogue()
+    if( choice == 3)
+      yourCharacter = new mage()
     yourCharacter
   }
 
-  def createMage :mage ={
-    val yourCharacter = new mage()
-    yourCharacter.updateStats( level = 1)
-    yourCharacter
-  }
-  
-  var Ron = createWarrior
-  var Don = createRogue
-  var Mon = createMage
-  Ron.levelUp
-  Ron.updateStats(Ron.level)
-  println(s"""$Ron
-             |
-             |$Don
-             |
-             |$Mon""".stripMargin)
+  val yourCharacter = chooseYourCharacter
+  if( yourCharacter.classId != 0)
+    yourCharacter.updateStats
+  println(yourCharacter)
   
 }
 
