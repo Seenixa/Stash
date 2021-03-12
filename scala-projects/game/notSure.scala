@@ -11,22 +11,17 @@ object game extends App{
     var agility :Int = 10,
     var intelligence :Int = 10,
     var vitality :Int = 21,
+    var hitDamage :Int = 0
     )
   {
     var health = 10 * vitality
     this.health = health
     
     def levelUp :Unit ={
-      this.level += 1
+      level += 1
     }
     
     def updateValues :Unit ={
-      if( this.getClass.getSimpleName == "warrior")
-        warrior.updateStats( level)
-      if( this.getClass.getSimpleName == "rogue")
-        rogue.updateStats( level)
-      if( this.getClass.getSimpleName == "mage")
-        mage.updateStats( level)
     } 
     
   }
@@ -36,17 +31,13 @@ object game extends App{
     var shieldWall :Int = 0,
   ) extends character
   {
-    var hitDamage = strength * 2
-    this.hitDamage = hitDamage
-    this.classId = 1
         
-    def updateStats( level :Int) :Unit ={
-      this.level = level
-      this.armor = 20 
-      this.strength = 50 + (level * 5)
-      this.agility = 15 + (level * 3) 
-      this.intelligence = 10 + (level * 2)
-      this.vitality = 30 + (level * 10) 
+    override def updateValues :Unit ={
+      armor = 20 
+      strength = 50 + (level * 5)
+      agility = 15 + (level * 3) 
+      intelligence = 10 + (level * 2)
+      vitality = 30 + (level * 10) 
       health = vitality * 10
       hitDamage = strength * 2
       shieldBash = strength + armor
@@ -66,18 +57,14 @@ object game extends App{
     var poisonDuration :Int = 0,
     var poisonDamage :Int = 0
   ) extends character
-  {
-    var hitDamage = strength + agility
-    this.hitDamage = hitDamage
-    this.classId = 2
-      
-    def updateStats( level :Int) :Unit ={
-      this.level = level
-      this.armor = 10
-      this.strength = 20 + (level * 2)
-      this.agility = 50 + (level * 5) 
-      this.intelligence = 10 + (level * 3)
-      this.vitality = 20 + (level * 5)
+  {  
+    
+    override def updateValues :Unit ={
+      armor = 10
+      strength = 20 + (level * 2)
+      agility = 50 + (level * 5) 
+      intelligence = 10 + (level * 3)
+      vitality = 20 + (level * 5)
       health = vitality * 10
       hitDamage = strength + agility
       poisonDamage = agility
@@ -100,17 +87,13 @@ object game extends App{
     var frostboltChillDuration :Int = 0
   ) extends character
   {
-    var hitDamage = intelligence
-    this.hitDamage = hitDamage
-    this.classId = 3
      
-    def updateStats( level :Int) :Unit ={
-      this.level = level
-      this.armor = 5
-      this.strength = 10 + (level * 2)
-      this.agility = 20 + (level * 2)
-      this.intelligence = 50 + (level * 5)
-      this.vitality = 15 + (level * 4) 
+    override def updateValues :Unit ={
+      armor = 5
+      strength = 10 + (level * 2)
+      agility = 20 + (level * 2)
+      intelligence = 50 + (level * 5)
+      vitality = 15 + (level * 4) 
       health = vitality * 10
       hitDamage = intelligence
       fireballDamage = intelligence * 5
@@ -163,7 +146,7 @@ object game extends App{
                 |1. Warrior
                 |2. Rogue
                 |3. Mage""".stripMargin)
-    var choice = 2
+    var choice = 1
     var yourCharacter = new character()
     if( choice == 1)
       yourCharacter = new warrior()
@@ -178,6 +161,10 @@ object game extends App{
   val yourCharacter = chooseYourCharacter
   yourCharacter.levelUp
   yourCharacter.updateValues
+  yourCharacter.levelUp
+  yourCharacter.updateValues
+  yourCharacter.levelUp
+  yourCharacter.updateValues
   println(s"$yourCharacter")
 
   
@@ -185,4 +172,3 @@ object game extends App{
 
   
 }
-
