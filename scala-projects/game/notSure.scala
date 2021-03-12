@@ -18,7 +18,17 @@ object game extends App{
     
     def levelUp :Unit ={
       this.level += 1
+    }
+    
+    def updateValues :Unit ={
+      if( this.getClass.getSimpleName == "warrior")
+        warrior.updateStats( level)
+      if( this.getClass.getSimpleName == "rogue")
+        rogue.updateStats( level)
+      if( this.getClass.getSimpleName == "mage")
+        mage.updateStats( level)
     } 
+    
   }
   
   class warrior(
@@ -164,10 +174,15 @@ object game extends App{
     yourCharacter
   }
 
+  
   val yourCharacter = chooseYourCharacter
-  if( yourCharacter.classId != 0)
-    yourCharacter.updateStats
-  println(yourCharacter)
+  yourCharacter.levelUp
+  yourCharacter.updateValues
+  println(s"$yourCharacter")
+
+  
+  
+
   
 }
 
