@@ -11,9 +11,11 @@ object game extends App{
     var agility :Int = 0,
     var intelligence :Int = 0,
     var vitality :Int = 0,
-    var hitDamage :Int = 0
+    var hitDamage :Int = 0,
+    var experience = 0,
     )
   {
+    var exptoNextLevel = 100 + level * 50
     var health = 10 * vitality
     this.health = health
     
@@ -123,12 +125,14 @@ object game extends App{
       enemyIdCounter
     }
     val id = nextId
+    val expReward = level * 50
     
     override def toString = s"""Name:         $name
                                |Id:           $id
                                |Damage:       $hitDamage
                                |Health:       $health
-                               |Armor:        $armor""".stripMargin    
+                               |Armor:        $armor
+                               |Experience:   $expReward""".stripMargin    
   }
  
   class item(
@@ -188,10 +192,16 @@ object game extends App{
   val yourCharacter = chooseYourCharacter
   yourCharacter.levelUp
   yourCharacter.updateValues
+  println(s"$yourCharacter")
   yourCharacter.levelUp
   yourCharacter.updateValues
+  println(s"$yourCharacter")
   yourCharacter.levelUp
   yourCharacter.updateValues
   println(s"$yourCharacter")
 
+  
+  
+
+  
 }
