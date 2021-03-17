@@ -1,16 +1,16 @@
 object game extends App{
   import scala.collection.mutable.ArrayBuffer
   val random = scala.util.Random
-  var idCounter = 0
+  var itemIdCounter = 0
+  var enemyIdCounter = 0
   
   class character(
-    var classId :Int = 0,
     var level :Int = 1,
     var armor :Int = 0,
-    var strength :Int = 10,
-    var agility :Int = 10,
-    var intelligence :Int = 10,
-    var vitality :Int = 21,
+    var strength :Int = 0,
+    var agility :Int = 0,
+    var intelligence :Int = 0,
+    var vitality :Int = 0,
     var hitDamage :Int = 0
     )
   {
@@ -110,6 +110,26 @@ object game extends App{
                                |vitality:     $vitality
                                |health:       $health""".stripMargin    
   }
+  
+  class enemy(
+    val name :String,
+    val level :Int = 0
+    val hitDamage :Int = 0,
+    val armor :Int = 0,
+    val health :Int = 0
+  ){
+    def nextId :Int ={
+      enemyIdCounter += 1
+      enemyIdCounter
+    }
+    val id = nextId
+    
+    override def toString = s"""Name:         $name
+                               |Id:           $id
+                               |Damage:       $hitDamage
+                               |Health:       $health
+                               |Armor:        $armor""".stripMargin    
+  }
  
   class item(
     val name :String,
@@ -120,8 +140,8 @@ object game extends App{
     val armor :Int = 0
   ){
     def nextId :Int ={
-      idCounter += 1
-      idCounter
+      itemIdCounter += 1
+      itemIdCounter
     }
     val id = nextId
     
@@ -139,6 +159,13 @@ object game extends App{
     new item( name = "Slippers of agility", agility = 10),
     new item( name = "Robes of the magi", intelligence = 10),
     new item( name = "Chainmail", armor = 20)
+  )
+  
+  val enemies = Seq(
+    new enemy( name = "Green slime", level = 1, hitDamage = 10, health = 100, armor = 0)
+    new enemy( name = "Blue slime", level = 2, hitDamage = 20, health = 200, armor = 5)
+    new enemy( name = "Red slime", level = 3, hitDamage = 30, health = 300, armor = 10)
+    new enemy( name = "Black slime", level = 4, hitDamage = 40, health = 400, armor = 15)
   )
   
   def chooseYourCharacter :character ={
@@ -167,8 +194,4 @@ object game extends App{
   yourCharacter.updateValues
   println(s"$yourCharacter")
 
-  
-  
-
-  
 }
