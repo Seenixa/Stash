@@ -12,7 +12,7 @@ object game extends App{
     var intelligence :Int = 0,
     var vitality :Int = 0,
     var hitDamage :Int = 0,
-    var experience = 0,
+    var experience :Int = 0,
     )
   {
     var exptoNextLevel = 100 + level * 50
@@ -24,7 +24,9 @@ object game extends App{
     }
     
     def updateValues :Unit ={
-    } 
+    }
+    
+    
     
   }
   
@@ -52,7 +54,8 @@ object game extends App{
                                |agility:      $agility
                                |intelligence: $intelligence
                                |vitality:     $vitality
-                               |health:       $health""".stripMargin
+                               |health:       $health
+                               |""".stripMargin
   }
   
   class rogue(
@@ -79,7 +82,8 @@ object game extends App{
                                |agility:      $agility
                                |intelligence: $intelligence
                                |vitality:     $vitality
-                               |health:       $health""".stripMargin 
+                               |health:       $health
+                               |""".stripMargin 
   }
   
   class mage(
@@ -110,12 +114,13 @@ object game extends App{
                                |agility:      $agility
                                |intelligence: $intelligence
                                |vitality:     $vitality
-                               |health:       $health""".stripMargin    
+                               |health:       $health
+                               |""".stripMargin    
   }
   
   class enemy(
     val name :String,
-    val level :Int = 0
+    val level :Int = 0,
     val hitDamage :Int = 0,
     val armor :Int = 0,
     val health :Int = 0
@@ -132,7 +137,8 @@ object game extends App{
                                |Damage:       $hitDamage
                                |Health:       $health
                                |Armor:        $armor
-                               |Experience:   $expReward""".stripMargin    
+                               |Experience:   $expReward
+                               |""".stripMargin    
   }
  
   class item(
@@ -155,7 +161,8 @@ object game extends App{
                                |Agility:      $agility
                                |Intelligence: $intelligence
                                |Vitality:     $vitality
-                               |Armor:        $armor""".stripMargin 
+                               |Armor:        $armor
+                               |""".stripMargin 
   }
 
   val items = Seq(
@@ -166,9 +173,9 @@ object game extends App{
   )
   
   val enemies = Seq(
-    new enemy( name = "Green slime", level = 1, hitDamage = 10, health = 100, armor = 0)
-    new enemy( name = "Blue slime", level = 2, hitDamage = 20, health = 200, armor = 5)
-    new enemy( name = "Red slime", level = 3, hitDamage = 30, health = 300, armor = 10)
+    new enemy( name = "Green slime", level = 1, hitDamage = 10, health = 100, armor = 0),
+    new enemy( name = "Blue slime", level = 2, hitDamage = 20, health = 200, armor = 5),
+    new enemy( name = "Red slime", level = 3, hitDamage = 30, health = 300, armor = 10),
     new enemy( name = "Black slime", level = 4, hitDamage = 40, health = 400, armor = 15)
   )
   
@@ -188,18 +195,20 @@ object game extends App{
     yourCharacter
   }
 
+  def itemById( id: Int) :item ={
+    println(items(id - 1))
+    items(id - 1)
+  }
+  
+  def enemyById( id: Int) :enemy ={
+    println(enemies(id - 1))
+    enemies(id - 1)
+  }
   
   val yourCharacter = chooseYourCharacter
-  yourCharacter.levelUp
-  yourCharacter.updateValues
-  println(s"$yourCharacter")
-  yourCharacter.levelUp
-  yourCharacter.updateValues
-  println(s"$yourCharacter")
-  yourCharacter.levelUp
-  yourCharacter.updateValues
-  println(s"$yourCharacter")
 
+  itemById(2)
+  enemyById(2)
   
   
 
