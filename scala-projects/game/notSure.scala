@@ -1,19 +1,21 @@
 object game extends App{
   import scala.collection.mutable.ArrayBuffer
   val random = scala.util.Random
-  var idCounter = 0
+  var itemIdCounter = 0
+  var enemyIdCounter = 0
   
   class character(
-    var classId :Int = 0,
     var level :Int = 1,
     var armor :Int = 0,
-    var strength :Int = 10,
-    var agility :Int = 10,
-    var intelligence :Int = 10,
-    var vitality :Int = 21,
-    var hitDamage :Int = 0
+    var strength :Int = 0,
+    var agility :Int = 0,
+    var intelligence :Int = 0,
+    var vitality :Int = 0,
+    var hitDamage :Int = 0,
+    var experience :Int = 0,
     )
   {
+    var exptoNextLevel = 100 + level * 50
     var health = 10 * vitality
     this.health = health
     
@@ -22,7 +24,11 @@ object game extends App{
     }
     
     def updateValues :Unit ={
-    } 
+    }
+    
+    def getHit(amount :Int) :Unit ={
+      health -= amount
+    }
     
   }
   
@@ -34,9 +40,9 @@ object game extends App{
         
     override def updateValues :Unit ={
       armor = 20 
-      strength = 50 + (level * 5)
-      agility = 15 + (level * 3) 
-      intelligence = 10 + (level * 2)
+      strength = 20 + (level * 5)
+      agility = 10 + (level * 3) 
+      intelligence = 5 + (level * 2)
       vitality = 30 + (level * 10) 
       health = vitality * 10
       hitDamage = strength * 2
@@ -50,7 +56,8 @@ object game extends App{
                                |agility:      $agility
                                |intelligence: $intelligence
                                |vitality:     $vitality
-                               |health:       $health""".stripMargin
+                               |health:       $health
+                               |""".stripMargin
   }
   
   class rogue(
@@ -61,9 +68,9 @@ object game extends App{
     
     override def updateValues :Unit ={
       armor = 10
-      strength = 20 + (level * 2)
-      agility = 50 + (level * 5) 
-      intelligence = 10 + (level * 3)
+      strength = 10 + (level * 2)
+      agility = 20 + (level * 5) 
+      intelligence = 5 + (level * 3)
       vitality = 20 + (level * 5)
       health = vitality * 10
       hitDamage = strength + agility
@@ -77,7 +84,8 @@ object game extends App{
                                |agility:      $agility
                                |intelligence: $intelligence
                                |vitality:     $vitality
-                               |health:       $health""".stripMargin 
+                               |health:       $health
+                               |""".stripMargin 
   }
   
   class mage(
@@ -90,9 +98,9 @@ object game extends App{
      
     override def updateValues :Unit ={
       armor = 5
-      strength = 10 + (level * 2)
-      agility = 20 + (level * 2)
-      intelligence = 50 + (level * 5)
+      strength = 5 + (level * 2)
+      agility = 10 + (level * 2)
+      intelligence = 20 + (level * 5)
       vitality = 15 + (level * 4) 
       health = vitality * 10
       hitDamage = intelligence
@@ -108,7 +116,36 @@ object game extends App{
                                |agility:      $agility
                                |intelligence: $intelligence
                                |vitality:     $vitality
-                               |health:       $health""".stripMargin    
+                               |health:       $health
+                               |""".stripMargin    
+  }
+  
+  class enemy(
+    val name :String,
+    val level :Int = 0,
+    val hitDamage :Int = 0,
+    val armor :Int = 0,
+    var health :Int = 0
+  ){
+    def nextId :Int ={
+      enemyIdCounter += 1
+      enemyIdCounter
+    }
+    val id = nextId
+    val expReward = level * 50
+    
+    override def toString = s"""Name:         $name
+                               |Id:           $id
+                               |Damage:       $hitDamage
+                               |Health:       $health
+                               |Armor:        $armor
+                               |Experience:   $expReward
+                               |""".stripMargin
+    
+    def getHit(amount :Int) :Unit ={
+      health -= amount
+    }
+    
   }
  
   class item(
@@ -120,8 +157,8 @@ object game extends App{
     val armor :Int = 0
   ){
     def nextId :Int ={
-      idCounter += 1
-      idCounter
+      itemIdCounter += 1
+      itemIdCounter
     }
     val id = nextId
     
@@ -131,22 +168,25 @@ object game extends App{
                                |Agility:      $agility
                                |Intelligence: $intelligence
                                |Vitality:     $vitality
-                               |Armor:        $armor""".stripMargin 
+                               |Armor:        $armor
+                               |""".stripMargin 
   }
-
+  
+  val enemies = Seq(
+    new enemy( name = "Green slime", level = 1, hitDamage = 10, health = 100, armor = 0),
+    new enemy( name = "Blue slime", level = 2, hitDamage = 20, health = 200, armor = 5),
+    new enemy( name = "Red slime", level = 3, hitDamage = 30, health = 300, armor = 10),
+    new enemy( name = "Black slime", level = 4, hitDamage = 40, health = 400, armor = 15)
+  )
+  
   val items = Seq(
     new item( name = "Gauntlets of Strength", strength = 10),
     new item( name = "Slippers of agility", agility = 10),
     new item( name = "Robes of the magi", intelligence = 10),
     new item( name = "Chainmail", armor = 20)
-  )
+  )  
   
-  def chooseYourCharacter :character ={
-    println(s"""Pick your character!
-                |1. Warrior
-                |2. Rogue
-                |3. Mage""".stripMargin)
-    var choice = 1
+  def chooseYourCharacter(choice: Int) :character ={
     var yourCharacter = new character()
     if( choice == 1)
       yourCharacter = new warrior()
@@ -157,18 +197,47 @@ object game extends App{
     yourCharacter
   }
 
+  def itemById( id: Int) :item ={
+    items(id - 1)
+  }
   
-  val yourCharacter = chooseYourCharacter
-  yourCharacter.levelUp
+  def enemyById( id: Int) :enemy ={
+    enemies(id - 1)
+  }
+  
+  def fight(myChar: character, enemy: enemy) :Unit ={
+    val enemyStartingHealth = enemy.health
+    var choiceOne = 1
+    var choiceTwo = 1
+    while (myChar.health > 0 && enemy.health > 0){
+      println(s"""1. Basic attack
+                  |2. Skills
+                  |""".stripMargin)
+      choiceOne = 1
+      if( choiceOne == 1){
+        enemy.getHit(myChar.hitDamage)
+        if( enemy.health > 0)
+          myChar.getHit(enemy.hitDamage)
+      }
+      println(s"""The enemy's remaining health: ${enemy.health}
+                  |Your remaining health: ${myChar.health}
+                  |""".stripMargin)
+    }
+    enemy.health = enemyStartingHealth
+  }
+  
+  def playTheGame :Unit ={
+    println(s"""Pick your character!
+                |1. Warrior
+                |2. Rogue
+                |3. Mage
+                |""".stripMargin)
+    val yourCharacter = chooseYourCharacter(1)
+  }
+  
+  val yourCharacter = chooseYourCharacter(1)
   yourCharacter.updateValues
-  yourCharacter.levelUp
-  yourCharacter.updateValues
-  yourCharacter.levelUp
-  yourCharacter.updateValues
-  println(s"$yourCharacter")
-
-  
-  
-
-  
+  println(yourCharacter)
+  val enemyCharacter = enemyById(4)
+  fight(yourCharacter, enemyCharacter)
 }
