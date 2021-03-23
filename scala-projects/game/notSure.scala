@@ -12,15 +12,17 @@ object game extends App{
     var intelligence :Int = 0,
     var vitality :Int = 0,
     var hitDamage :Int = 0,
+    var health :Int = 0,
     var experience :Int = 0,
     )
   {
     var exptoNextLevel = 100 + level * 50
-    var health = 10 * vitality
-    this.health = health
+    health = 10 * vitality
+    var items = ArrayBuffer[item]()
     
     def levelUp :Unit ={
       level += 1
+      updateValues
     }
     
     def updateValues :Unit ={
@@ -30,6 +32,25 @@ object game extends App{
       health -= amount
     }
     
+    def fight(enemy: enemies) :Unit ={
+      var choiceOne = 1
+      var choiceTwo = 1
+      while (this.health > 0 && enemy.health > 0){
+        println(s"""1. Basic attack
+                    |2. Skills
+                    |""".stripMargin)
+        choiceOne = 1 // scala.io.StdIn.readInt()
+        if( choiceOne == 1){
+          enemy.getHit(this.hitDamage)
+          if( enemy.health > 0)
+            this.getHit(enemy.hitDamage)
+      }
+        println(s"""The enemy's remaining health: ${enemy.health}
+                    |Your remaining health: ${this.health}
+                    |""".stripMargin)
+      }
+    }
+    
     override def toString = s"""level:        $level
                                |class:        ${this.getClass.getSimpleName}
                                |strength:     $strength
@@ -37,6 +58,7 @@ object game extends App{
                                |intelligence: $intelligence
                                |vitality:     $vitality
                                |health:       $health
+                               |armor:        $armor
                                |""".stripMargin  
   }
   
@@ -98,8 +120,8 @@ object game extends App{
     }   
   }
   
-  class enemy(
-    var name :String,
+  class enemies(
+    var name :String = "",
     var level :Int = 0,
     var hitDamage :Int = 0,
     var armor :Int = 0,
@@ -122,6 +144,46 @@ object game extends App{
     def getHit(amount :Int) :Unit ={
       health -= amount
     }   
+  }
+  
+  class greenSlime() extends enemies
+  {
+    name = "Green Slime"
+    level = 1
+    hitDamage = 10
+    armor = 0
+    health = 100
+    typeId = 1
+  }
+  
+  class blueSlime() extends enemies
+  {
+    name = "Blue Slime"
+    level = 2
+    hitDamage = 20
+    armor = 5
+    health = 200
+    typeId = 2
+  }
+
+  class redSlime() extends enemies
+  {
+    name = "Red Slime"
+    level = 3
+    hitDamage = 30
+    armor = 10
+    health = 300
+    typeId = 3
+  }
+  
+  class blackSlime() extends enemies
+  {
+    name = "Black Slime"
+    level = 4
+    hitDamage = 40
+    armor = 15
+    health = 400
+    typeId = 4
   }
  
   class item(
@@ -149,19 +211,35 @@ object game extends App{
                                |""".stripMargin 
   }
   
-  val enemies = Seq(
-    new enemy( name = "Green slime", level = 1, hitDamage = 10, health = 100, armor = 0),
-    new enemy( name = "Blue slime", level = 2, hitDamage = 20, health = 200, armor = 5),
-    new enemy( name = "Red slime", level = 3, hitDamage = 30, health = 300, armor = 10),
-    new enemy( name = "Black slime", level = 4, hitDamage = 40, health = 400, armor = 15)
-  )
+  class gauntletOfStrength() extends item
+  {
+    name = "Gauntlets of Strength"
+    strength = 10
+  }
   
-  val items = Seq(
-    new item( name = "Gauntlets of Strength", strength = 10),
-    new item( name = "Slippers of agility", agility = 10),
-    new item( name = "Robes of the magi", intelligence = 10),
-    new item( name = "Chainmail", armor = 20)
-  )  
+  class slippersOfAgility() extends item
+  {
+    name = "Slippers of Agility"
+    agility = 10
+  }
+  
+  class robesOfTheMagi() extends item
+  {
+    name = "Robes of the Magi"
+    intelligence = 10
+  }
+  
+  class healthStone() extends item
+  {
+    name = "Healthstone"
+    vitality = 10
+  }
+  
+  class chainmail() extends item
+  {
+    name = "Chainmail"
+    armor = 10
+  }
   
   def chooseYourCharacter(choice: Int) :character ={
     var yourCharacter = new character()
@@ -173,42 +251,24 @@ object game extends App{
       yourCharacter = new mage()
     yourCharacter
   }
-  
-  def fight(myChar: character, enemy: enemy) :Unit ={
-    val enemyStartingHealth = enemy.health
-    var choiceOne = 1
-    var choiceTwo = 1
-    while (myChar.health > 0 && enemy.health > 0){
-      println(s"""1. Basic attack
-                  |2. Skills
-                  |""".stripMargin)
-      choiceOne = 1
-      if( choiceOne == 1){
-        enemy.getHit(myChar.hitDamage)
-        if( enemy.health > 0)
-          myChar.getHit(enemy.hitDamage)
-      }
-      println(s"""The enemy's remaining health: ${enemy.health}
-                  |Your remaining health: ${myChar.health}
-                  |""".stripMargin)
-    }
-    enemy.health = enemyStartingHealth
-  }
-  
+    
   def playTheGame :Unit ={
     println(s"""Pick your character!
                 |1. Warrior
                 |2. Rogue
                 |3. Mage
                 |""".stripMargin)
-    val choice = 1
+    val choice = 1  // scala.io.StdIn.readInt()
     val yourCharacter = chooseYourCharacter(choice)
   }
   
   val yourCharacter = chooseYourCharacter(1)
   yourCharacter.updateValues
   println(yourCharacter)
-  val enemyCharacter = enemies(1)
-  fight (yourCharacter, enemyCharacter)
+  yourCharacter.levelUp
+  println(yourCharacter)
+  val gos = new gauntletOfStrength()
+  yourCharacter.items.append(gos )
+  println(yourCharacter.items(0))
 
 }
