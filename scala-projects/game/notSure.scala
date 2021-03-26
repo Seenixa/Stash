@@ -201,14 +201,15 @@ object game extends App{
     }
     val id = nextId
     
-    override def toString = s"""Name:         $name
-                               |Id:           $id
-                               |Strength:     $strength
-                               |Agility:      $agility
-                               |Intelligence: $intelligence
-                               |Vitality:     $vitality
-                               |Armor:        $armor
-                               |""".stripMargin 
+    override def toString = 
+    s"""Name:         $name
+        |Id:           $id
+        ${if (strength != 0) "|Strength:     " + s"$strength"; else{""} }
+        |${if (agility != 0) "Agility:      " + s"$agility"; else{""}}
+        |${if (intelligence != 0) "Intelligence: " + s"$intelligence"; else {""}}
+        |${if (vitality != 0) "Vitality:     " + s"$vitality"; else {""}}
+        |${if (armor != 0) "Armor:        " + s"$armor" else {""}}
+        |""".stripMargin 
   }
   
   class gauntletOfStrength() extends item
@@ -267,8 +268,24 @@ object game extends App{
   println(yourCharacter)
   yourCharacter.levelUp
   println(yourCharacter)
-  val gos = new gauntletOfStrength()
-  yourCharacter.items.append(gos )
+  
+  val itemList = Seq(
+    new gauntletOfStrength(),
+    new slippersOfAgility(),
+    new robesOfTheMagi(),
+    new healthStone(),
+    new chainmail()
+  )
+  
+  yourCharacter.items.append(itemList(0))
+  yourCharacter.items.append(itemList(1))
+  yourCharacter.items.append(itemList(2))
+  yourCharacter.items.append(itemList(3))
+  yourCharacter.items.append(itemList(4))
   println(yourCharacter.items(0))
+  println(yourCharacter.items(1))
+  println(yourCharacter.items(2))
+  println(yourCharacter.items(3))
+  println(yourCharacter.items(4))
 
 }
