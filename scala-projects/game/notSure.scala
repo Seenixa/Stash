@@ -35,6 +35,7 @@ object game extends App{
     def fight(enemy: enemies) :Unit ={
       var choiceOne = 1
       var choiceTwo = 1
+      val race = this.getClass.getSimpleName
       while (health > 0 && enemy.health > 0){
         println(s"""1. Basic attack
                     |2. Skills
@@ -43,13 +44,24 @@ object game extends App{
         if( choiceOne == 1)
           enemy.getHit(hitDamage)
         else if( choiceOne == 2){
-          if( this.getClass.getSimpleName == "warrior"){
-            println(s"""1. Shield Wall
-                       |2. Shield Bash""".stripMargin)
-            if( choiceTwo == 1)
-              
+          race match{
+            case "warrior" =>
+              println(s"""1. Shield Wall
+                         |2. Shield Bash
+                         |3. back
+                         |""".stripMargin)
+            case "rogue" =>
+              println(s"""1. Poison Dagger
+                         |2. Ambush
+                         |3. back
+                         |""".stripMargin)
+            case "mage" =>
+              println(s"""1. Fireball
+                         |2. Frostbolt
+                         |3. back
+                         |""".stripMargin)
           }
-            
+          enemy.getHit(hitDamage)
         }
         if( enemy.health > 0)
           this.getHit(enemy.hitDamage)
@@ -279,7 +291,7 @@ object game extends App{
     val yourCharacter = chooseYourCharacter(choice)
   }
   
-  val yourCharacter = chooseYourCharacter(1)
+  val yourCharacter = chooseYourCharacter(2)
   yourCharacter.updateValues
   println(yourCharacter)
   yourCharacter.levelUp
