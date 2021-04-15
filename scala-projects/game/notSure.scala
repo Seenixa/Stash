@@ -35,22 +35,38 @@ object game extends App{
     def fight(enemy: enemies) :Unit ={
       var choiceOne = 1
       var choiceTwo = 1
-      while (this.health > 0 && enemy.health > 0){
+      while (health > 0 && enemy.health > 0){
         println(s"""1. Basic attack
                     |2. Skills
                     |""".stripMargin)
-        choiceOne = 1 // scala.io.StdIn.readInt()
-        if( choiceOne == 1){
-          enemy.getHit(this.hitDamage)
-          if( enemy.health > 0)
-            this.getHit(enemy.hitDamage)
+        choiceOne = 2 // scala.io.StdIn.readInt()
+        if( choiceOne == 1)
+          enemy.getHit(hitDamage)
+        else if( choiceOne == 2){
+          if( this.getClass.getSimpleName == "warrior"){
+            println(s"""1. Shield Wall
+                       |2. Shield Bash""".stripMargin)
+            if( choiceTwo == 1)
+              
+          }
+            
+        }
+        if( enemy.health > 0)
+          this.getHit(enemy.hitDamage)
+        if( enemy.health > 0 && health > 0)
+          println(s"""Your remaining health: $health
+                      |The enemy's remaining health: ${enemy.health}
+                      |""".stripMargin)
+        else if( enemy.health < 0)
+          println(s"""Your remaining health: $health
+                      |The enemy has been defeated.""".stripMargin)
+        if( health <= 0)
+          println(s"""You have been defeated.
+                      |The enemy's remaining health: ${enemy.health}""".stripMargin)
+
+        
       }
-        println(s"""The enemy's remaining health: ${enemy.health}
-                    |Your remaining health: ${this.health}
-                    |""".stripMargin)
-      }
-    }
-    
+    }  
     override def toString = s"""level:        $level
                                |class:        ${this.getClass.getSimpleName}
                                |strength:     $strength
@@ -205,7 +221,7 @@ object game extends App{
     s"""Name:         $name
         |Id:           $id
         ${if (strength != 0) "|Strength:     " + s"$strength"; else{""} }
-        |${if (agility != 0) "Agility:      " + s"$agility"; else{""}}
+        ${if (agility != 0) "|Agility:      " + s"$agility"; else{""}}
         |${if (intelligence != 0) "Intelligence: " + s"$intelligence"; else {""}}
         |${if (vitality != 0) "Vitality:     " + s"$vitality"; else {""}}
         |${if (armor != 0) "Armor:        " + s"$armor" else {""}}
@@ -277,15 +293,6 @@ object game extends App{
     new chainmail()
   )
   
-  yourCharacter.items.append(itemList(0))
-  yourCharacter.items.append(itemList(1))
-  yourCharacter.items.append(itemList(2))
-  yourCharacter.items.append(itemList(3))
-  yourCharacter.items.append(itemList(4))
-  println(yourCharacter.items(0))
-  println(yourCharacter.items(1))
-  println(yourCharacter.items(2))
-  println(yourCharacter.items(3))
-  println(yourCharacter.items(4))
-
+  val monster = new blackSlime()
+  yourCharacter.fight(monster)
 }
