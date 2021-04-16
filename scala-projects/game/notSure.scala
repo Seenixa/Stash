@@ -28,6 +28,9 @@ object game extends App{
     def updateValues :Unit ={
     }
     
+    def castAbility(choice: Int, enemy: enemies) :Unit ={
+    }
+    
     def getHit(amount :Int) :Unit ={
       health -= amount
     }
@@ -35,11 +38,13 @@ object game extends App{
     def fight(enemy: enemies) :Unit ={
       var choiceOne = 1
       var choiceTwo = 1
+      var turnCounter = 0
       val race = this.getClass.getSimpleName
-      while (health > 0 && enemy.health > 0){
+      while (health > 0 && enemy.health > 0 && turnCounter < 10){
         println(s"""1. Basic attack
                     |2. Skills
                     |""".stripMargin)
+        turnCounter += 1
         choiceOne = 2 // scala.io.StdIn.readInt()
         if( choiceOne == 1)
           enemy.getHit(hitDamage)
@@ -50,18 +55,26 @@ object game extends App{
                          |2. Shield Bash
                          |3. back
                          |""".stripMargin)
+              choiceTwo = 2 // scala.io.StdIn.readInt()
             case "rogue" =>
               println(s"""1. Poison Dagger
                          |2. Ambush
                          |3. back
                          |""".stripMargin)
+              choiceTwo = 2 // scala.io.StdIn.readInt()
             case "mage" =>
               println(s"""1. Fireball
                          |2. Frostbolt
                          |3. back
                          |""".stripMargin)
+              choiceTwo = 1 // scala.io.StdIn.readInt()
+            case _ =>
+              while( choiceTwo > 3 || choiceTwo < 1){
+                println("Your choice is impossible.")
+                choiceTwo = 1 // scala.io.StdIn.readInt()
+              }
           }
-          enemy.getHit(hitDamage)
+          castAbility(choiceTwo, enemy)
         }
         if( enemy.health > 0)
           this.getHit(enemy.hitDamage)
@@ -106,11 +119,30 @@ object game extends App{
       shieldBash = strength + armor
       shieldWall = (health * 0.25).toInt
     }
+    
+    override def castAbility(choice: Int, enemy: enemies) :Unit={
+      if( choice == 1)
+        castShieldWall
+      if( choice == 2)
+        castShieldBash(enemy)
+    }
+    
+    def castShieldWall :Unit ={
+      println("Casting Shield Wall.")
+      health += shieldWall
+    }
+    
+    def castShieldBash(enemy: enemies) :Unit ={
+      println("Casting Shield Bash")
+      enemy.getHit(shieldBash)
+    }
+    
   }
   
   class rogue(
     var poisonDuration :Int = 0,
-    var poisonDamage :Int = 0
+    var poisonDamage :Int = 0,
+    var ambushDamage :Int = 0
   ) extends character
   {  
     override def updateValues :Unit ={
@@ -123,7 +155,26 @@ object game extends App{
       hitDamage = strength + agility
       poisonDamage = agility
       poisonDuration = ( intelligence / 5)
-    }    
+      ambushDamage = agility * 2
+    }
+    
+    override def castAbility(choice: Int, enemy: enemies) :Unit ={
+      if( choice == 1)
+        castPoisonDagger(enemy)
+      if( choice == 2)
+        castAmbush(enemy)
+    }
+    
+    def castPoisonDagger(enemy: enemies) :Unit ={
+      println("Casting Poison Dagger")
+      enemy.getHit(hitDamage)
+    }
+    
+    def castAmbush(enemy: enemies) :Unit ={
+      println("Casting Ambush")
+      enemy.getHit(ambushDamage)
+    }
+    
   }
   
   class mage(
