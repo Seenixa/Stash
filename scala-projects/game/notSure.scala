@@ -64,8 +64,12 @@ object game extends App{
         turnCounter += 1
 
         choiceOne = 2 // scala.io.StdIn.readInt()
-        if( choiceOne == 1)
-          enemy.getHit(hitDamage)
+        if( choiceOne == 1){
+          if( this.hitDamage > enemy.armor)
+            enemy.getHit(hitDamage - enemy.armor)
+          else
+            enemy.getHit(1)
+        }
         else if( choiceOne == 2){
           race match{
             case "warrior" =>
@@ -85,7 +89,7 @@ object game extends App{
                          |2. Frostbolt
                          |3. back
                          |""".stripMargin)
-              choiceTwo = 2 // scala.io.StdIn.readInt()
+              choiceTwo = 1 // scala.io.StdIn.readInt()
             case _ =>
               while( choiceTwo > 3 || choiceTwo < 1){
                 println("Your choice is impossible.")
@@ -107,7 +111,10 @@ object game extends App{
           enemy.chill -= 1
         }      
         if( enemy.health > 0){
-          this.getHit(enemy.hitDamage)
+          if( enemy.hitDamage > this.armor)
+            this.getHit(enemy.hitDamage - this.armor)
+          else
+            this.getHit(1)
           enemy.hitDamage = storeHitDamage
         }
         if( enemy.health > 0 && health > 0)
@@ -165,7 +172,10 @@ object game extends App{
     
     def castShieldBash(enemy: enemies) :Unit ={
       println("Casting Shield Bash")
-      enemy.getHit(shieldBash)
+      if( shieldBash > enemy.armor)
+        enemy.getHit(shieldBash - enemy.armor)
+      else
+        enemy.getHit(1)
     }   
   }
   
@@ -198,13 +208,19 @@ object game extends App{
     
     def castPoisonDagger(enemy: enemies) :Unit ={
       println("Casting Poison Dagger")
-      enemy.getHit(hitDamage)
+      if( hitDamage > enemy.armor)
+        enemy.getHit(hitDamage - enemy.armor)
+      else
+        enemy.getHit(1)
       enemy.poison += poisonDuration
     }
     
     def castAmbush(enemy: enemies) :Unit ={
       println("Casting Ambush")
-      enemy.getHit(ambushDamage)
+      if( ambushDamage > enemy.armor)
+        enemy.getHit(ambushDamage - enemy.armor)
+      else
+        enemy.getHit(1)
     }  
   }
   
@@ -239,13 +255,19 @@ object game extends App{
     
     def castFireball(enemy: enemies) :Unit ={
       println("Casting Fireball")
-      enemy.getHit(fireballDamage)
+      if( fireballDamage > enemy.armor)
+        enemy.getHit(fireballDamage - enemy.armor)
+      else
+        enemy.getHit(1)
       enemy.burn += 1
     }
     
     def castFrostbolt(enemy: enemies) :Unit ={
       println("Casting Frostbolt")
-      enemy.getHit(frostboltDamage)
+      if( frostboltDamage > enemy.armor)
+        enemy.getHit(frostboltDamage - enemy.armor)
+      else
+        enemy.getHit(1)
       enemy.chill += 1
     }    
   }
@@ -315,7 +337,7 @@ object game extends App{
     name = "Black Slime"
     level = 4
     hitDamage = 40
-    armor = 15
+    armor = 20
     health = 400
     typeId = 4
   }
@@ -411,7 +433,7 @@ object game extends App{
     new chainmail()
   )
   
-  yourCharacter.items.append(itemList(0))
+  yourCharacter.items.appendAll(itemList)
   yourCharacter.updateValues
   println(yourCharacter)
   
