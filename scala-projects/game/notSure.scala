@@ -39,12 +39,17 @@ object game extends App{
       var choiceOne = 1
       var choiceTwo = 1
       var turnCounter = 0
+      var storeHitDamage = enemy.hitDamage
       val race = this.getClass.getSimpleName
+      println(s"""$this
+                |$enemy""".stripMargin)
       while (health > 0 && enemy.health > 0 && turnCounter < 10){
+        println(s"Turn: ${turnCounter + 1}")
         println(s"""1. Basic attack
                     |2. Skills
                     |""".stripMargin)
         turnCounter += 1
+
         choiceOne = 2 // scala.io.StdIn.readInt()
         if( choiceOne == 1)
           enemy.getHit(hitDamage)
@@ -76,13 +81,27 @@ object game extends App{
           }
           castAbility(choiceTwo, enemy)
         }
-        if( enemy.health > 0)
+        if( enemy.burn > 0){
+          enemy.health -= this.intelligence
+          enemy.burn -= 1
+        }
+        if( enemy.poison > 0){
+          enemy.health -= this.agility
+          enemy.poison -= 1
+        }
+        if( enemy.chill > 0){
+          enemy.hitDamage = (enemy.hitDamage * 0.8F).toInt
+          enemy.chill -= 1
+        }      
+        if( enemy.health > 0){
           this.getHit(enemy.hitDamage)
+          enemy.hitDamage = storeHitDamage
+        }
         if( enemy.health > 0 && health > 0)
           println(s"""Your remaining health: $health
                       |The enemy's remaining health: ${enemy.health}
                       |""".stripMargin)
-        else if( enemy.health < 0)
+        else if( enemy.health <= 0)
           println(s"""Your remaining health: $health
                       |The enemy has been defeated.""".stripMargin)
         if( health <= 0)
@@ -168,6 +187,7 @@ object game extends App{
     def castPoisonDagger(enemy: enemies) :Unit ={
       println("Casting Poison Dagger")
       enemy.getHit(hitDamage)
+      enemy.poison += poisonDuration
     }
     
     def castAmbush(enemy: enemies) :Unit ={
@@ -196,7 +216,27 @@ object game extends App{
       frostboltDamage = intelligence * 3
       fireballBurnDuration = ( intelligence / 10)
       frostboltChillDuration = ( intelligence / 10)
-    }   
+    }
+    
+    override def castAbility(choice: Int, enemy: enemies) :Unit ={
+      if( choice == 1)
+        castFireball(enemy)
+      if( choice == 2)
+        castFrostbolt(enemy)
+    }
+    
+    def castFireball(enemy: enemies) :Unit ={
+      println("Casting Fireball")
+      enemy.getHit(fireballDamage)
+      enemy.burn += 1
+    }
+    
+    def castFrostbolt(enemy: enemies) :Unit ={
+      println("Casting Frostbolt")
+      enemy.getHit(frostboltDamage)
+      enemy.chill += 1
+    }
+    
   }
   
   class enemies(
@@ -212,6 +252,9 @@ object game extends App{
       enemyIdCounter
     }
     val id = nextId
+    var burn = 0
+    var chill = 0
+    var poison = 0
     
     override def toString = s"""Name:         $name
                                |Id:           $id
@@ -222,7 +265,9 @@ object game extends App{
     
     def getHit(amount :Int) :Unit ={
       health -= amount
-    }   
+    }
+    
+    
   }
   
   class greenSlime() extends enemies
@@ -342,7 +387,7 @@ object game extends App{
     val yourCharacter = chooseYourCharacter(choice)
   }
   
-  val yourCharacter = chooseYourCharacter(2)
+  val yourCharacter = chooseYourCharacter(3)
   yourCharacter.updateValues
   println(yourCharacter)
   yourCharacter.levelUp
