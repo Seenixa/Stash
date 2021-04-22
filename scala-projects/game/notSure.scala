@@ -44,8 +44,7 @@ object game extends App{
         println(s"""
           |Congratulations! You have reached level $level!
           |""".stripMargin)
-      }
-      
+      }   
     }
     
     def updateValues :Unit ={
@@ -67,12 +66,11 @@ object game extends App{
       println(s"""$this
                 |$enemy""".stripMargin)
       while (health > 0 && enemy.health > 0 && turnCounter < 10){
-        println(s"Turn: ${turnCounter + 1}")
+        turnCounter += 1
+        println(s"Turn: $turnCounter")
         println(s"""1. Basic attack
                     |2. Skills
-                    |""".stripMargin)
-        turnCounter += 1
-
+                    |""".stripMargin)       
         choiceOne = 2 // scala.io.StdIn.readInt()
         if( choiceOne == 1){
           if( this.hitDamage > enemy.armor)
@@ -81,6 +79,7 @@ object game extends App{
             enemy.getHit(1)
         }
         else if( choiceOne == 2){
+          do{
           race match{
             case "warrior" =>
               println(s"""1. Shield Wall
@@ -99,13 +98,16 @@ object game extends App{
                          |2. Frostbolt
                          |3. back
                          |""".stripMargin)
-              choiceTwo = 1 // scala.io.StdIn.readInt()
-            case _ =>
-              while( choiceTwo > 3 || choiceTwo < 1){
-                println("Your choice is impossible.")
-                choiceTwo = 1 // scala.io.StdIn.readInt()
+              choiceTwo = 4 // scala.io.StdIn.readInt()
+            case _ => 
+              println(s"What the fuck are you doing?! How are you not any one of the classes wtf man?")
+            
               }
-          }
+            if( choiceTwo > 3 || choiceTwo < 1){
+              println("Your choice is impossible.")
+              choiceTwo = 1 // scala.io.StdIn.readInt()
+            }
+          } while( choiceTwo > 3 || choiceTwo < 1)
           castAbility(choiceTwo, enemy)
         }
         if( enemy.burn > 0){
@@ -458,7 +460,7 @@ object game extends App{
   yourCharacter.updateValues
   println(yourCharacter)
   
-  for(i <- 0 to 3)
+
     yourCharacter.fight(new blackSlime())
   println(yourCharacter)
 }
