@@ -22,6 +22,7 @@ object game extends App{
     var itemStats = new item()
     
     def updateItemValues :Unit ={
+      itemStats = new item()
       for(itemStat <- items){
         itemStats.strength += itemStat.strength
         itemStats.agility += itemStat.agility
@@ -36,7 +37,16 @@ object game extends App{
       updateValues
     }
     
-    
+    def updateLevel: Unit ={
+      if( experience >= exptoNextLevel){
+        experience -= exptoNextLevel
+        levelUp
+        println(s"""
+          |Congratulations! You have reached level $level!
+          |""".stripMargin)
+      }
+      
+    }
     
     def updateValues :Unit ={
     }
@@ -121,9 +131,12 @@ object game extends App{
           println(s"""Your remaining health: $health
                       |The enemy's remaining health: ${enemy.health}
                       |""".stripMargin)
-        else if( enemy.health <= 0)
+        else if( enemy.health <= 0){
           println(s"""Your remaining health: $health
                       |The enemy has been defeated.""".stripMargin)
+          this.experience += enemy.experience
+          updateValues
+        }
         if( health <= 0)
           println(s"""You have been defeated.
                       |The enemy's remaining health: ${enemy.health}""".stripMargin)
@@ -147,6 +160,7 @@ object game extends App{
   {    
     override def updateValues :Unit ={
       updateItemValues
+      updateLevel
       armor = 20 + itemStats.armor
       strength = 20 + (level * 5) + itemStats.strength
       agility = 10 + (level * 3) + itemStats.agility
@@ -187,6 +201,7 @@ object game extends App{
   {  
     override def updateValues :Unit ={
       updateItemValues
+      updateLevel
       armor = 10 + itemStats.armor
       strength = 10 + (level * 2) + itemStats.strength
       agility = 20 + (level * 5) + itemStats.agility
@@ -233,6 +248,7 @@ object game extends App{
   {
     override def updateValues :Unit ={
       updateItemValues
+      updateLevel
       armor = 5 + itemStats.armor
       strength = 5 + (level * 2) + itemStats.strength
       agility = 10 + (level * 2) + itemStats.agility
@@ -278,7 +294,8 @@ object game extends App{
     var hitDamage :Int = 0,
     var armor :Int = 0,
     var health :Int = 0,
-    var typeId :Int = 0
+    var typeId :Int = 0,
+    var experience :Int = 0
   ){
     def nextId :Int ={
       enemyIdCounter += 1
@@ -310,6 +327,7 @@ object game extends App{
     armor = 0
     health = 100
     typeId = 1
+    experience = 50
   }
   
   class blueSlime() extends enemies
@@ -320,6 +338,7 @@ object game extends App{
     armor = 5
     health = 200
     typeId = 2
+    experience = 100
   }
 
   class redSlime() extends enemies
@@ -330,6 +349,7 @@ object game extends App{
     armor = 10
     health = 300
     typeId = 3
+    experience = 150
   }
   
   class blackSlime() extends enemies
@@ -340,6 +360,7 @@ object game extends App{
     armor = 20
     health = 400
     typeId = 4
+    experience = 200
   }
  
   class item(
@@ -437,6 +458,7 @@ object game extends App{
   yourCharacter.updateValues
   println(yourCharacter)
   
-  val monster = new blackSlime()
-  yourCharacter.fight(monster)
+  for(i <- 0 to 3)
+    yourCharacter.fight(new blackSlime())
+  println(yourCharacter)
 }
