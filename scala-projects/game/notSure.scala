@@ -1,8 +1,15 @@
 object game extends App{
   import scala.collection.mutable.ArrayBuffer
   val random = scala.util.Random
+  
   var itemIdCounter = 0
-  var enemyIdCounter = 0
+  var enemyIdCounter = 0  
+  val monsterTypes = Seq[enemies](
+    new enemies(name = "Green slime", level = 1, hitDamage = 10, armor = 0, health = 100, typeId = 1, experience = 50),
+    new enemies(name = "Blue slime", level = 2, hitDamage = 20, armor = 5, health = 200, typeId = 2, experience = 100),
+    new enemies(name = "Red slime", level = 3, hitDamage = 30, armor = 10, health = 300, typeId = 3, experience = 150),
+    new enemies(name = "Black slime", level = 4, hitDamage = 40, armor = 15, health = 400, typeId = 4, experience = 2000),
+  )
   
   class character(
     var level :Int = 1,
@@ -18,8 +25,16 @@ object game extends App{
   {
     var exptoNextLevel = 100 + level * 50
     health = 10 * vitality
+    
+    
+    
     var items = ArrayBuffer[item]()
     var itemStats = new item()
+    
+    def addItem(item: item) :Unit ={
+      items.append(item)
+      updateValues
+    }
     
     def updateItemValues :Unit ={
       itemStats = new item()
@@ -34,11 +49,11 @@ object game extends App{
     
     def levelUp :Unit ={
       level += 1
-      updateValues
+      exptoNextLevel = 100 + level * 50
     }
     
     def updateLevel: Unit ={
-      if( experience >= exptoNextLevel){
+      while( experience >= exptoNextLevel){
         experience -= exptoNextLevel
         levelUp
         println(s"""
@@ -143,7 +158,8 @@ object game extends App{
           println(s"""You have been defeated.
                       |The enemy's remaining health: ${enemy.health}""".stripMargin)
       }
-    }  
+    }
+    
     override def toString = s"""level:        $level
                                |class:        ${this.getClass.getSimpleName}
                                |strength:     $strength
@@ -152,6 +168,8 @@ object game extends App{
                                |vitality:     $vitality
                                |health:       $health
                                |armor:        $armor
+                               |experience:   $experience
+                               |nextlevelup:  $exptoNextLevel
                                |""".stripMargin  
   }
   
@@ -316,55 +334,26 @@ object game extends App{
                                |Armor:        $armor
                                |""".stripMargin
     
+    def addValues(Id :Int) :enemies ={
+      for( enemyType <- monsterTypes){
+        if( enemyType.typeId == Id){
+          name = enemyType.name
+          level = enemyType.level
+          hitDamage = enemyType.hitDamage
+          armor = enemyType.armor
+          health = enemyType.health
+          typeId = enemyType.typeId
+          experience = enemyType.experience
+        }
+      }
+      this
+    } 
+    
     def getHit(amount :Int) :Unit ={
       health -= amount
     }  
   }
-  
-  class greenSlime() extends enemies
-  {
-    name = "Green Slime"
-    level = 1
-    hitDamage = 10
-    armor = 0
-    health = 100
-    typeId = 1
-    experience = 50
-  }
-  
-  class blueSlime() extends enemies
-  {
-    name = "Blue Slime"
-    level = 2
-    hitDamage = 20
-    armor = 5
-    health = 200
-    typeId = 2
-    experience = 100
-  }
-
-  class redSlime() extends enemies
-  {
-    name = "Red Slime"
-    level = 3
-    hitDamage = 30
-    armor = 10
-    health = 300
-    typeId = 3
-    experience = 150
-  }
-  
-  class blackSlime() extends enemies
-  {
-    name = "Black Slime"
-    level = 4
-    hitDamage = 40
-    armor = 20
-    health = 400
-    typeId = 4
-    experience = 200
-  }
- 
+    
   class item(
     var name :String = "",
     var strength :Int = 0,
@@ -423,11 +412,18 @@ object game extends App{
   
   def chooseYourCharacter(choice: Int) :character ={
     var yourCharacter = new character()
-    if( choice == 1)
+    var yourChoice = choice
+    var toomuch = false
+    while( yourChoice > 3 || yourChoice < 1){
+      println(s"Try again")
+      toomuch = true
+      yourChoice = 1 // scala.io.StdId.readInt()
+    }
+    if( yourChoice == 1)
       yourCharacter = new warrior()
-    if( choice == 2)
+    if( yourChoice == 2)
       yourCharacter = new rogue()
-    if( choice == 3)
+    if( yourChoice == 3)
       yourCharacter = new mage()
     yourCharacter
   }
@@ -438,7 +434,7 @@ object game extends App{
                 |2. Rogue
                 |3. Mage
                 |""".stripMargin)
-    val choice = 1  // scala.io.StdIn.readInt()
+    var choice = 1  // scala.io.StdIn.readInt()
     val yourCharacter = chooseYourCharacter(choice)
   }
   
@@ -456,11 +452,12 @@ object game extends App{
     new chainmail()
   )
   
-  yourCharacter.items.appendAll(itemList)
+  yourCharacter.addItem(new gauntletOfStrength())
   yourCharacter.updateValues
   println(yourCharacter)
   
 
-    yourCharacter.fight(new blackSlime())
+  for( i <- 0 to 3)
+    yourCharacter.fight(new enemies().addValues(4))
   println(yourCharacter)
 }
