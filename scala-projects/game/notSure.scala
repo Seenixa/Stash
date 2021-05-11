@@ -8,7 +8,15 @@ object game extends App{
     new enemies(name = "Green slime", level = 1, hitDamage = 10, armor = 0, health = 100, typeId = 1, experience = 50),
     new enemies(name = "Blue slime", level = 2, hitDamage = 20, armor = 5, health = 200, typeId = 2, experience = 100),
     new enemies(name = "Red slime", level = 3, hitDamage = 30, armor = 10, health = 300, typeId = 3, experience = 150),
-    new enemies(name = "Black slime", level = 4, hitDamage = 40, armor = 15, health = 400, typeId = 4, experience = 2000),
+    new enemies(name = "Black slime", level = 4, hitDamage = 40, armor = 15, health = 400, typeId = 4, experience = 200),
+  )
+  
+  val itemTypes = Seq[item](
+    new item(name = "Gauntlets of Strength", strength = 10, typeId = 1),
+    new item(name = "Slippers of Agility", agility = 10, typeId = 2),
+    new item(name = "Robes of the Magi", intelligence = 10, typeId = 3),
+    new item(name = "Healthstone", vitality = 10, typeId = 4),
+    new item(name = "Chainmail", armor = 10, typeId = 5)
   )
   
   class character(
@@ -23,29 +31,32 @@ object game extends App{
     var experience :Int = 0,
     )
   {
-    var exptoNextLevel = 100 + level * 50
-    health = 10 * vitality
+    var inventory = ArrayBuffer[item]()
     
-    
-    
-    var items = ArrayBuffer[item]()
     var itemStats = new item()
     
-    def addItem(item: item) :Unit ={
-      items.append(item)
-      updateValues
+    def addItem( itemId: Int) :Unit ={
+      for( itemType <- itemTypes){
+        if( itemType.typeId == itemId){
+          inventory += itemType.addValues(itemId)
+        }
+      }
+      updateItemValues
     }
     
-    def updateItemValues :Unit ={
+    def updateItemValues: Unit ={
       itemStats = new item()
-      for(itemStat <- items){
-        itemStats.strength += itemStat.strength
-        itemStats.agility += itemStat.agility
-        itemStats.intelligence += itemStat.intelligence
-        itemStats.vitality += itemStat.vitality
-        itemStats.armor += itemStat.armor
-      }
+      for(item <- inventory){
+        itemStats.strength += item.strength
+        itemStats.agility += item.agility
+        itemStats.intelligence += item.intelligence
+        itemStats.vitality += item.vitality
+        itemStats.armor += item.armor
+      }      
     }
+    
+    var exptoNextLevel = 100 + level * 50
+    health = 10 * vitality
     
     def levelUp :Unit ={
       level += 1
@@ -107,7 +118,7 @@ object game extends App{
                          |2. Ambush
                          |3. back
                          |""".stripMargin)
-              choiceTwo = 2 // scala.io.StdIn.readInt()
+              choiceTwo = 1 // scala.io.StdIn.readInt()
             case "mage" =>
               println(s"""1. Fireball
                          |2. Frostbolt
@@ -179,8 +190,8 @@ object game extends App{
   ) extends character
   {    
     override def updateValues :Unit ={
-      updateItemValues
       updateLevel
+      updateItemValues
       armor = 20 + itemStats.armor
       strength = 20 + (level * 5) + itemStats.strength
       agility = 10 + (level * 3) + itemStats.agility
@@ -220,8 +231,8 @@ object game extends App{
   ) extends character
   {  
     override def updateValues :Unit ={
-      updateItemValues
       updateLevel
+      updateItemValues
       armor = 10 + itemStats.armor
       strength = 10 + (level * 2) + itemStats.strength
       agility = 20 + (level * 5) + itemStats.agility
@@ -267,7 +278,6 @@ object game extends App{
   ) extends character
   {
     override def updateValues :Unit ={
-      updateItemValues
       updateLevel
       armor = 5 + itemStats.armor
       strength = 5 + (level * 2) + itemStats.strength
@@ -308,7 +318,7 @@ object game extends App{
     }    
   }
   
-  class enemies(
+  class enemies(                                                      /* Base enemy class */
     var name :String = "",
     var level :Int = 0,
     var hitDamage :Int = 0,
@@ -334,7 +344,7 @@ object game extends App{
                                |Armor:        $armor
                                |""".stripMargin
     
-    def addValues(Id :Int) :enemies ={
+    def addValues(Id :Int) :enemies ={                              /* Generates the value for the enemy of your choice */
       for( enemyType <- monsterTypes){
         if( enemyType.typeId == Id){
           name = enemyType.name
@@ -353,8 +363,8 @@ object game extends App{
       health -= amount
     }  
   }
-    
-  class item(
+      
+  class item(                                                     /* Base item class */
     var name :String = "",
     var strength :Int = 0,
     var agility :Int = 0,
@@ -363,7 +373,7 @@ object game extends App{
     var armor :Int = 0,
     var typeId :Int = 0
   ){
-    def nextId :Int ={
+    def nextId :Int ={                                            /* Given an ID to the item */
       itemIdCounter += 1
       itemIdCounter
     }
@@ -371,50 +381,30 @@ object game extends App{
     
     override def toString = 
     s"""Name:         $name
-        |Id:           $id
-        |${if (strength != 0) "|Strength:     " + s"$strength"; else{""} }
-        |${if (agility != 0) "|Agility:      " + s"$agility"; else{""}}
+        |${if (strength != 0) "Strength:     " + s"$strength"; else{""} }
+        |${if (agility != 0) "Agility:      " + s"$agility"; else{""}}
         |${if (intelligence != 0) "Intelligence: " + s"$intelligence"; else {""}}
         |${if (vitality != 0) "Vitality:     " + s"$vitality"; else {""}}
         |${if (armor != 0) "Armor:        " + s"$armor" else {""}}
-        |""".stripMargin 
+        |""".stripMargin
+    
+    def addValues(Id :Int) :item ={                               /* Generates the value for the item of your choice */
+      for( itemType <- itemTypes){
+        if( itemType.typeId == Id){
+          name = itemType.name
+          armor = itemType.armor
+          typeId = itemType.typeId
+        }
+      }
+      this
+    }   
   }
   
-  class gauntletOfStrength() extends item
-  {
-    name = "Gauntlets of Strength"
-    strength = 10
-  }
-  
-  class slippersOfAgility() extends item
-  {
-    name = "Slippers of Agility"
-    agility = 10
-  }
-  
-  class robesOfTheMagi() extends item
-  {
-    name = "Robes of the Magi"
-    intelligence = 10
-  }
-  
-  class healthStone() extends item
-  {
-    name = "Healthstone"
-    vitality = 10
-  }
-  
-  class chainmail() extends item
-  {
-    name = "Chainmail"
-    armor = 10
-  }
-  
-  def chooseYourCharacter(choice: Int) :character ={
+  def chooseYourCharacter(choice: Int) :character ={            /* Character choice */
     var yourCharacter = new character()
     var yourChoice = choice
     var toomuch = false
-    while( yourChoice > 3 || yourChoice < 1){
+    while( yourChoice > 3 || yourChoice < 1){                   /* Makes your character a class of your choice */
       println(s"Try again")
       toomuch = true
       yourChoice = 1 // scala.io.StdId.readInt()
@@ -425,39 +415,42 @@ object game extends App{
       yourCharacter = new rogue()
     if( yourChoice == 3)
       yourCharacter = new mage()
+    yourCharacter.updateValues
     yourCharacter
   }
     
-  def playTheGame :Unit ={
+  def playTheGame :Unit ={                                        /* Character choice */
     println(s"""Pick your character!
                 |1. Warrior
                 |2. Rogue
                 |3. Mage
                 |""".stripMargin)
-    var choice = 1  // scala.io.StdIn.readInt()
+    var choice = 2  // scala.io.StdIn.readInt()
     val yourCharacter = chooseYourCharacter(choice)
+                                                                  /* Random fights */
+    yourCharacter.fight(new enemies().addValues(3))               
+    yourCharacter.fight(new enemies().addValues(4))
+                                                                  /* test item giveouts */
+    println(s"""Choose an item                                    
+                |1. Gauntlets of Strength, extra Strength
+                |2. Slippers of Agility, extra Agility
+                |3. Robes of the Magi, extra Intelligence
+                |4. Healthstone, extra Vitality
+                |5. Chainmail, extra Armor
+                |""".stripMargin)
+    choice = 2 // scala.io.StdIn.readInt()
+    yourCharacter.addItem(choice)
+    
   }
   
-  val yourCharacter = chooseYourCharacter(3)
-  yourCharacter.updateValues
-  println(yourCharacter)
-  yourCharacter.levelUp
-
+  playTheGame
   
-  val itemList = Seq(
-    new gauntletOfStrength(),
-    new slippersOfAgility(),
-    new robesOfTheMagi(),
-    new healthStone(),
-    new chainmail()
-  )
   
-  yourCharacter.addItem(new gauntletOfStrength())
-  yourCharacter.updateValues
-  println(yourCharacter)
-  
-
-  for( i <- 0 to 3)
-    yourCharacter.fight(new enemies().addValues(4))
-  println(yourCharacter)
 }
+
+
+
+
+
+
+
