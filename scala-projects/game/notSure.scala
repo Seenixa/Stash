@@ -42,6 +42,7 @@ object game extends App{
         }
       }
       updateItemValues
+      updateValues
     }
     
     def updateItemValues: Unit ={
@@ -187,11 +188,11 @@ object game extends App{
   class warrior(
     var shieldBash :Int = 0,
     var shieldWall :Int = 0,
+    var stamina :Int = 100
   ) extends character
   {    
     override def updateValues :Unit ={
       updateLevel
-      updateItemValues
       armor = 20 + itemStats.armor
       strength = 20 + (level * 5) + itemStats.strength
       agility = 10 + (level * 3) + itemStats.agility
@@ -199,7 +200,7 @@ object game extends App{
       vitality = 30 + (level * 10) + itemStats.vitality
       health = vitality * 10
       hitDamage = strength * 2
-      shieldBash = strength + armor
+      shieldBash = strength * 2 + armor
       shieldWall = (health * 0.25).toInt
     }
     
@@ -227,12 +228,12 @@ object game extends App{
   class rogue(
     var poisonDuration :Int = 0,
     var poisonDamage :Int = 0,
-    var ambushDamage :Int = 0
+    var ambushDamage :Int = 0,
+    var energy :Int = 100
   ) extends character
   {  
     override def updateValues :Unit ={
       updateLevel
-      updateItemValues
       armor = 10 + itemStats.armor
       strength = 10 + (level * 2) + itemStats.strength
       agility = 20 + (level * 5) + itemStats.agility
@@ -274,7 +275,8 @@ object game extends App{
     var fireballDamage :Int = 0,
     var fireballBurnDuration :Int = 0,
     var frostboltDamage :Int = 0,
-    var frostboltChillDuration :Int = 0
+    var frostboltChillDuration :Int = 0,
+    var mana :Int = 100,
   ) extends character
   {
     override def updateValues :Unit ={
@@ -425,29 +427,39 @@ object game extends App{
                 |2. Rogue
                 |3. Mage
                 |""".stripMargin)
-    var choice = 2  // scala.io.StdIn.readInt()
-    val yourCharacter = chooseYourCharacter(choice)
-                                                                  /* Random fights */
-    yourCharacter.fight(new enemies().addValues(3))               
+    var characterChoice = 1  // scala.io.StdIn.readInt()
+    val yourCharacter = chooseYourCharacter(characterChoice)
+                                                                  /* Test fights */
+    yourCharacter.fight(new enemies().addValues(1))
+    yourCharacter.fight(new enemies().addValues(2))
+    yourCharacter.fight(new enemies().addValues(3))
+    yourCharacter.fight(new enemies().addValues(4))
     yourCharacter.fight(new enemies().addValues(4))
                                                                   /* test item giveouts */
-    println(s"""Choose an item                                    
-                |1. Gauntlets of Strength, extra Strength
-                |2. Slippers of Agility, extra Agility
-                |3. Robes of the Magi, extra Intelligence
-                |4. Healthstone, extra Vitality
-                |5. Chainmail, extra Armor
-                |""".stripMargin)
-    choice = 2 // scala.io.StdIn.readInt()
-    yourCharacter.addItem(choice)
+    var itemChoice = 0
+    println("Choose an item.")
+    while( itemChoice > 5 || itemChoice <= 0){                                            
+      println(s"""1. Gauntlets of Strength, extra Strength
+                  |2. Slippers of Agility, extra Agility
+                  |3. Robes of the Magi, extra Intelligence
+                  |4. Healthstone, extra Vitality
+                  |5. Chainmail, extra Armor
+                  |""".stripMargin)
+      itemChoice = 1 // scala.io.StdIn.readInt()
+      if( itemChoice > 5 || itemChoice <= 0){
+        println("That option doesn't exist. Try again")
+      }
+      else
+        yourCharacter.addItem(itemChoice)  
+    }
+                                                                    /* No clue yet */
+    println(yourCharacter)
+    println(yourCharacter.inventory(0))
     
   }
   
   playTheGame
-  
-  
 }
-
 
 
 
