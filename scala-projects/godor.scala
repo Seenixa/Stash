@@ -1,4 +1,4 @@
-object minesweeper extends App{
+object godor extends App{
   import scala.collection.mutable.ArrayBuffer
   
   val melyseg = Array[Int](0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 4, 4, 3, 2, 2, 2, 2, 0, 0, 0, 2, 2, 2, 0, 0, 2, 0, 4, 0, 2, 1, 4, 0)
