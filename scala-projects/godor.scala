@@ -141,7 +141,10 @@ object godor extends App{
     endOfLine
   }
   
-
+  if(checkMonotonityFromTheStart <= checkMonotonityFromTheEnd)
+    println(s"A gödör folyamatosan mélyül")
+  else
+    println(s"A gödör mélyülése nem folyamatos")
   
   
   println(s"$checkMonotonityFromTheStart  $checkMonotonityFromTheEnd")
