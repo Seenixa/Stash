@@ -1,7 +1,7 @@
-object godor extends App{
+object minesweeper extends App{
   import scala.collection.mutable.ArrayBuffer
   
-  val melyseg = Array[Int](0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 4, 4, 3, 2, 2, 3, 3, 4, 4, 3, 2, 2, 0, 0, 0, 2, 2, 2, 0, 0, 2, 0, 4, 0, 2, 1, 4, 0)
+  val melyseg = Array[Int](0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 4, 4, 3, 2, 2, 2, 2, 0, 0, 0, 2, 2, 2, 0, 0, 2, 0, 4, 0, 2, 1, 4, 0)
   var dataCount = 0
   
   // 1. feladat  Írja ki a képernyőre, hogy az adatforrás hány adatot tartalmaz!
@@ -126,9 +126,25 @@ object godor extends App{
   
   // b)
   
+  def checkMonotonityFromTheStart :Int ={
+    var endOfLine = getHoleStart
+    while(getDepth(endOfLine) <= getDepth(endOfLine + 1))
+      endOfLine += 1
+    endOfLine += 1
+    endOfLine
+  }
+  
+  def checkMonotonityFromTheEnd :Int ={
+    var endOfLine = getHoleEnd
+    while(getDepth(endOfLine) <= getDepth(endOfLine - 1))
+      endOfLine -= 1
+    endOfLine
+  }
+  
+
   
   
-  
+  println(s"$checkMonotonityFromTheStart  $checkMonotonityFromTheEnd")
   
   // c)
   
