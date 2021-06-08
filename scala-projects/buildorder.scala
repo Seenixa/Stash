@@ -13,6 +13,9 @@ object buildorder extends App{
     
     val buildings = ArrayBuffer[production](
       new production( name = "Supply Depot", supply = 14, timing = 8),
+      new production( name = "Supply Depot", supply = 14, timing = 6),
+      new production( name = "Supply Depot", supply = 14, timing = 5),
+      new production( name = "Supply Depot", supply = 14, timing = 7),
       new production( name = "SCV", supply = 14, timing = 4),
       new production( name = "SCV", supply = 15, timing = 12),
       new production( name = "Barracks", supply = 16, timing = 16)
@@ -32,8 +35,7 @@ object buildorder extends App{
             swap = true
           }
         }
-      } while( swap == true)
-        
+      } while( swap == true) 
     }
     
     def delay( seconds: Int) :Unit ={
@@ -49,13 +51,20 @@ object buildorder extends App{
       lastBuildTiming
     }
     
-    def checkBuildTimes( time: Int, prod: ArrayBuffer[production]) :Int ={
-      var nextBuild = 0
+    def checkBuildTimesEarly( time: Int, prod: ArrayBuffer[production]) :Boolean ={
+      var nextBuild = false
       for( build <- prod){
         if( timer + 3 == build.timing)
-          nextBuild = 1
+          nextBuild = true
+      }
+      nextBuild
+    }
+    
+    def checkBuildTimes( time: Int, prod: ArrayBuffer[production]) :Boolean ={
+      var nextBuild = false
+      for( build <- prod){
         if( timer == build.timing)
-          nextBuild = 2
+          nextBuild = true
       }
       nextBuild
     }
@@ -66,22 +75,26 @@ object buildorder extends App{
     println(i)
     
     var nextBuilding = buildings(0)
+    var earlyWarning = buildings(0)
     var writtenMinutes = timer / 60
     var writtenSeconds = timer % 60
     var buildId = 0
+    var earlyWarningId = 0
     
     while( timer < lookForLast(buildings) + 5){
       timer += 1
       writtenMinutes = timer / 60
       writtenSeconds = timer % 60
       delay(1)
-      if( checkBuildTimes(timer, buildings) == 0)
         println(s"$writtenMinutes : $writtenSeconds")
-      if( checkBuildTimes(timer, buildings) == 1){
-        println(s"$writtenMinutes : $writtenSeconds Get ready to build ${nextBuilding.name}.")
+      if( checkBuildTimesEarly(timer, buildings)){
+        println(s"Get ready to build ${earlyWarning.name}.")
+        earlyWarningId += 1
+        if( earlyWarningId < buildings.length)
+          earlyWarning = buildings(earlyWarningId)
       }
-      if( checkBuildTimes(timer,buildings) == 2){
-        println(s"$writtenMinutes : $writtenSeconds ${nextBuilding.name} building started.")
+      if( checkBuildTimes(timer,buildings)){
+        println(s"${nextBuilding.name} building started.")
         buildId += 1
         if( buildId < buildings.length)
           nextBuilding = buildings(buildId)
