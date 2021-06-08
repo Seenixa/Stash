@@ -2,9 +2,8 @@ object buildorder extends App{
   import scala.collection.mutable.ArrayBuffer  
   
   class production(
-    val name :String,
+    var name :String,
     val timing :Int,
-    val supply :Int
   ){
     override def toString = s"$name, $timing"
   }
@@ -12,19 +11,20 @@ object buildorder extends App{
   def startTimer :Unit ={
     
     val buildings = ArrayBuffer[production](
-      new production( name = "Supply Depot", supply = 14, timing = 8),
-      new production( name = "Supply Depot", supply = 14, timing = 6),
-      new production( name = "Supply Depot", supply = 14, timing = 5),
-      new production( name = "Supply Depot", supply = 14, timing = 7),
-      new production( name = "SCV", supply = 14, timing = 4),
-      new production( name = "SCV", supply = 15, timing = 12),
-      new production( name = "Barracks", supply = 16, timing = 16)
+      new production( name = "Supply Depot", timing = 8),
+      new production( name = "Supply Depot", timing = 6),
+      new production( name = "Supply Depot", timing = 4),
+      new production( name = "Supply Depot", timing = 7),
+      new production( name = "SCV", timing = 5),
+      new production( name = "SCV", timing = 12),
+      new production( name = "Barracks", timing = 16)
     )
     var timer = 0
     
     def sortBuildings :Unit ={
-      var temp = new production("", 0, 0)
+      var temp = new production("", 0)
       var swap = true
+      var stringwhatever = "and {$buildings(i+1).name"
       do{
         swap = false
         for( i <- 0 until buildings.length - 1){
@@ -34,6 +34,14 @@ object buildorder extends App{
             buildings(i + 1) = temp
             swap = true
           }
+          if( buildings(i).timing == buildings(i + 1).timing){
+            println(s"The program can't assign two buildings to the same time.")
+            println(s"If you need two buildings at the exact same time, use different buildings names.")
+            println(s"For example: '2 supply depots' or 'Supply depot and a Barrack'.")
+            delay(5)
+            System.exit(0)
+          }
+            
         }
       } while( swap == true) 
     }
