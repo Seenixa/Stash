@@ -4,7 +4,7 @@ object AccountManagement {
     class website {
       var bankAccounts: List[BankAccount] = List()
 
-      def registerAccount(username: String) = {
+      def registerAccount(username: String): Unit = {
         val newRegister = new BankAccount(username)
         var alreadyExists = false
         for (existingAccount <- bankAccounts) {
@@ -33,7 +33,7 @@ object AccountManagement {
         if (returnAccount.password == password)
           returnAccount
         else
-          throw new Error("Incorrect Password.")
+          throw new Error("Incorrect password.")
       }
 
     }
@@ -44,38 +44,62 @@ object AccountManagement {
 
       private var balance = 0
       var password = "19960329"
+      var history = ""
 
-      def changePassword(newPassword: String) = {
-        password = newPassword
+      def changePassword(oldPassword: String, newPassword: String, newPasswordAgain: String): Unit = {
+        if (newPassword == newPasswordAgain && oldPassword == password)
+          password = newPassword
+        else if (newPassword != newPasswordAgain)
+          throw new Error ("You have to write the same new password twice.")
+        else if (oldPassword != password)
+          throw new Error ("Incorrect password.")
+          
       }
 
-      def deposit(amount: Int) = {
-        if (amount > 0)
+      def checkBalance: String = {
+        s"Your current balance is : $balance,-"
+      }
+
+      def deposit(amount: Int): Unit = {
+        if (amount > 0) {
           balance += amount
+          history += s"\n$amount has been deposited."
+        }
+
       }
 
-      def withdraw(amount: Int) = {
-        if (0 < amount && amount <= balance)
+      def withdraw(amount: Int): Unit = {
+        if (0 < amount && amount <= balance) {
           balance -= amount
+          history += s"\n$amount has been withdrawn."
+        } 
         else
           throw new Error("insufficient funds")
       }
 
       override def toString = s"""\n|Username: $username
-                                  |Balance: $balance
-                                  |password: $password\n""".stripMargin
+                                  |Balance: $balance""".stripMargin
     }
 
-    def driver = {
+    def driver: Unit = {
       val website = new website()
 
       website.registerAccount("Akarki")
       website.registerAccount("valaki")
       website.registerAccount("Barki")
       website.registerAccount("Senki")
+
       val user = website.login("Akarki", "19960329")
+      user.changePassword("19960329", "Whatever", "Whatever")
+      val newuser = website.login("Akarki", "Whatever")
       user.deposit(1000)
       user.withdraw(100)
+      user.withdraw(100)
+      user.withdraw(100)
+      user.withdraw(100)
+      println(user.history)
+
+      println(user.checkBalance)
       println(user)
     }
 
