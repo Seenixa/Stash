@@ -2,7 +2,7 @@ object AccountManagement {
   def main(args: Array[String]): Unit = {
 
     class website {
-      var bankAccounts: List[BankAccount] = List()
+      private var bankAccounts: List[BankAccount] = List()
 
       def registerAccount(username: String): Unit = {
         val newRegister = new BankAccount(username)
