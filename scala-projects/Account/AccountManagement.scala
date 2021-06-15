@@ -1,13 +1,19 @@
 object AccountManagement {
   def main(args: Array[String]): Unit = {
+    
+    sealed trait Bank
+    case object otp extends Bank
+    case object raiffeisen extends Bank
+    case object KandH extends Bank
+    case object default extends Bank
 
     class website {
       private var bankAccounts: List[BankAccount] = List()
-      var guest = new BankAccount("Guest", "")
-      guest :: bankAccounts
+      var guest = new BankAccount("Guest", "", default)
+      bankAccounts = guest :: bankAccounts
       
-      def registerAccount(username: String): Unit = {
-        val newRegister = new BankAccount(username)
+      def registerAccount(username: String, bank: Bank): Unit = {
+        val newRegister = new BankAccount(username = username, bank = bank)
         var alreadyExists = false
         for (existingAccount <- bankAccounts) {
           if (existingAccount.username == newRegister.username) {
@@ -17,22 +23,29 @@ object AccountManagement {
         if (alreadyExists == true)
           throw new Error("That username is already taken.")
         else {
-          newRegister.Id = (bankAccounts.length + 2)
+          newRegister.bank match {
+            case otp => newRegister.Id += "0000-9834-"
+            case raiffeisen => newRegister.Id += "1231-6723-"
+            case KandH => newRegister.Id += "8721-1542-"
+            case _ => println("WTF?")
+          }
+          newRegister.Id += (bankAccounts.length + 999).toString
           bankAccounts = newRegister :: bankAccounts
         }
       }
 
       def login(username: String, password: String): BankAccount = {
         var exists = false
-        var returnAccount = new BankAccount("")
+        var returnAccount = new BankAccount("", "", default)
         for (existingAccount <- bankAccounts) {
           if (existingAccount.username == username) {
             exists = true
             returnAccount = existingAccount
           }
         }
-        if (exists == false)
+        if (exists == false){
           throw new Error("Account with that username does not exist.")
+        }
         if (returnAccount.password == password)
           returnAccount
         else
@@ -43,9 +56,9 @@ object AccountManagement {
         guest
       }
       
-      def locateAccountById(Id :Int): BankAccount = {
+      def locateAccountById(Id :String): BankAccount = {
         var exists = false
-        var returnAccount = new BankAccount("")
+        var returnAccount = new BankAccount("", "", default)
         for (existingAccount <- bankAccounts){
           if (existingAccount.Id == Id){
             exists = true
@@ -60,14 +73,15 @@ object AccountManagement {
     }
 
     class BankAccount(
-        val username: String,
-        var password: String = "19960329"
+      val username: String,
+      var password: String = "19960329",
+      val bank: Bank  
     ) {
 
       private var balance = 0
       var email = ""
-      var history = ""
-      var Id = 0
+      var history = s"\n   *#* $username *#*"
+      var Id = ""
 
       def changePassword(oldPassword: String, newPassword: String, newPasswordAgain: String): Unit = {
         if (newPassword == newPasswordAgain && oldPassword == password)
@@ -108,18 +122,22 @@ object AccountManagement {
 
       override def toString = s"""\n|Username: $username
                                   |${if (email != "")  "E-mail: " + s"$email"; else ("")}
-                                  |${if (balance != 0)  "Balance: " + s"$balance"; else ("")}""".stripMargin
+                                  |${if (balance != 0)  "Balance: " + s"$balance"; else ("")}
+                                  |Bank: $bank
+                                  |ID: $Id""".stripMargin
     }
+    
 
     def driver: Unit = {
       val website = new website()
+      var user = website.login("Guest", "")
+      
+      website.registerAccount("Akarki", otp)
+      website.registerAccount("valaki", KandH)
+      website.registerAccount("Barki", otp)
+      website.registerAccount("Senki", otp)
 
-      website.registerAccount("Akarki")
-      website.registerAccount("valaki")
-      website.registerAccount("Barki")
-      website.registerAccount("Senki")
-
-      var user = website.login("Akarki", "19960329")
+      user = website.login("Akarki", "19960329")
       user.email = "asdfas@gmail.com"
       user.changePassword("19960329", "Whatever", "Whatever")
       user.deposit(1000)
@@ -128,12 +146,14 @@ object AccountManagement {
       user.withdraw(100)
       user.withdraw(100)
       println(user.history)
-      user.transfer(100, website.locateAccountById(3))
-      println(website.locateAccountById(3))
+      user.transfer(100, website.locateAccountById("0000-9834-1000"))
+      println(website.locateAccountById("0000-9834-1000"))
       println(s"\n${user.checkBalance}")
       println(user)
       user = website.logout
       println(user)
+      if (user.Id.take(4) == "0000")
+        println("otp")
     }
 
     driver
