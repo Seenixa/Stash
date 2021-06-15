@@ -3,7 +3,9 @@ object AccountManagement {
 
     class website {
       private var bankAccounts: List[BankAccount] = List()
-
+      var guest = new BankAccount("Guest", "")
+      guest :: bankAccounts
+      
       def registerAccount(username: String): Unit = {
         val newRegister = new BankAccount(username)
         var alreadyExists = false
@@ -15,6 +17,7 @@ object AccountManagement {
         if (alreadyExists == true)
           throw new Error("That username is already taken.")
         else {
+          newRegister.Id = (bankAccounts.length + 2)
           bankAccounts = newRegister :: bankAccounts
         }
       }
@@ -35,16 +38,36 @@ object AccountManagement {
         else
           throw new Error("Incorrect password.")
       }
+      
+      def logout: BankAccount ={
+        guest
+      }
+      
+      def locateAccountById(Id :Int): BankAccount = {
+        var exists = false
+        var returnAccount = new BankAccount("")
+        for (existingAccount <- bankAccounts){
+          if (existingAccount.Id == Id){
+            exists = true
+            returnAccount = existingAccount
+          }
+        }
+        if (exists == false)
+          throw new Error("Account with that ID does not exist.")
+        returnAccount
+      }
 
     }
 
     class BankAccount(
-        val username: String
+        val username: String,
+        var password: String = "19960329"
     ) {
 
       private var balance = 0
-      var password = "19960329"
+      var email = ""
       var history = ""
+      var Id = 0
 
       def changePassword(oldPassword: String, newPassword: String, newPasswordAgain: String): Unit = {
         if (newPassword == newPasswordAgain && oldPassword == password)
@@ -76,9 +99,16 @@ object AccountManagement {
         else
           throw new Error("insufficient funds")
       }
+      
+      def transfer (amount: Int, to: BankAccount) :Unit = {
+        this.withdraw(amount)
+        to.deposit(amount)
+        
+      }
 
       override def toString = s"""\n|Username: $username
-                                  |Balance: $balance""".stripMargin
+                                  |${if (email != "")  "E-mail: " + s"$email"; else ("")}
+                                  |${if (balance != 0)  "Balance: " + s"$balance"; else ("")}""".stripMargin
     }
 
     def driver: Unit = {
@@ -89,17 +119,20 @@ object AccountManagement {
       website.registerAccount("Barki")
       website.registerAccount("Senki")
 
-      val user = website.login("Akarki", "19960329")
+      var user = website.login("Akarki", "19960329")
+      user.email = "asdfas@gmail.com"
       user.changePassword("19960329", "Whatever", "Whatever")
-      val newuser = website.login("Akarki", "Whatever")
       user.deposit(1000)
       user.withdraw(100)
       user.withdraw(100)
       user.withdraw(100)
       user.withdraw(100)
       println(user.history)
-
-      println(user.checkBalance)
+      user.transfer(100, website.locateAccountById(3))
+      println(website.locateAccountById(3))
+      println(s"\n${user.checkBalance}")
+      println(user)
+      user = website.logout
       println(user)
     }
 
