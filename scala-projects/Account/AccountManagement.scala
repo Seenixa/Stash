@@ -4,7 +4,7 @@ object AccountManagement {
     sealed trait Bank
     case object otp extends Bank
     case object raiffeisen extends Bank
-    case object KandH extends Bank
+    case object kandh extends Bank
     case object default extends Bank
 
     class website {
@@ -23,10 +23,10 @@ object AccountManagement {
         if (alreadyExists == true)
           throw new Error("That username is already taken.")
         else {
-          newRegister.bank match {
-            case otp => newRegister.Id += "0000-9834-"
-            case raiffeisen => newRegister.Id += "1231-6723-"
-            case KandH => newRegister.Id += "8721-1542-"
+          newRegister.bank.toString match {
+            case "otp" => newRegister.Id += "0000-9834-"
+            case "raiffeisen" => newRegister.Id += "1231-6723-"
+            case "kandh" => newRegister.Id += "8721-1542-"
             case _ => println("WTF?")
           }
           newRegister.Id += (bankAccounts.length + 999).toString
@@ -115,8 +115,12 @@ object AccountManagement {
       }
       
       def transfer (amount: Int, to: BankAccount) :Unit = {
+        if (this == to)
+          throw new Error("Why would you want to transfer to yourself?")
         this.withdraw(amount)
+        this.history += s"\n$amount has be transferred to ${to.username}."
         to.deposit(amount)
+        to.history += s"\n$amount has been transferred from ${this.username}."
         
       }
 
@@ -132,28 +136,33 @@ object AccountManagement {
       val website = new website()
       var user = website.login("Guest", "")
       
-      website.registerAccount("Akarki", otp)
-      website.registerAccount("valaki", KandH)
+      website.registerAccount("Akarki", kandh)
+      website.registerAccount("valaki", kandh)
       website.registerAccount("Barki", otp)
       website.registerAccount("Senki", otp)
 
       user = website.login("Akarki", "19960329")
       user.email = "asdfas@gmail.com"
       user.changePassword("19960329", "Whatever", "Whatever")
+      
       user.deposit(1000)
       user.withdraw(100)
       user.withdraw(100)
       user.withdraw(100)
       user.withdraw(100)
       println(user.history)
-      user.transfer(100, website.locateAccountById("0000-9834-1000"))
-      println(website.locateAccountById("0000-9834-1000"))
+      user.transfer(100, website.locateAccountById("8721-1542-1001"))
+      
+      println(website.locateAccountById("8721-1542-1001"))
       println(s"\n${user.checkBalance}")
       println(user)
-      user = website.logout
+      println(user.history)
       println(user)
-      if (user.Id.take(4) == "0000")
-        println("otp")
+      
+      if (user.Id.take(4) == "8721")
+        println("\nkandh")
+      
+      user = website.logout
     }
 
     driver
