@@ -8,6 +8,11 @@ class Website {
     accountList = loadToList
     accountMap = convertMap(accountList)
   }
+  
+  def resetTxt = {
+    import java.io._
+    val pw = new PrintWriter(new File("Repositories.txt"))
+  }
 
   def checkExistence(account: BankRepository): Boolean = {
     accountMap.contains(account.username)

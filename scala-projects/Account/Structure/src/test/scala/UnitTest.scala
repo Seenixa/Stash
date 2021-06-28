@@ -2,8 +2,12 @@ package Banking
 
 class UnitTest {
   val site = new Website
-
-  var Repo = new BankRepository(username = "")
+  val appCon = new ApplicationContext(new BankRepository)
+  appCon.Repository.username = "wasd"
+  appCon.Repository.password = "dsaW"
+  appCon.Repository.emailAddress = "appcon@gmail.com"
+  appCon.Service.deposit(1000)
+  
   var stAccount = new BankRepository(
     username = "Valaki",
     password = "asddsa",
@@ -16,20 +20,20 @@ class UnitTest {
     username = "Akarkiislehet",
     password = "asddsa",
     emailAddress = "@gmail.com")
-  val services = new BankService(Repo)
-  Repo.changeBalance(300)
   stAccount.save(site)
-  ndAccount.save(site)
   rdAccount.save(site)
+  site.resetTxt
+  ndAccount.save(site)
+  
+  appCon.Repository.save(site)
+  site.update
+  println(appCon.Repository)
 
-  var user = site.login("Valaki", "asddsa")
+  var user = site.login("wasd", "dsaW")
 
-  services.withdraw(100)
-  println(Repo.checkBalance)
-  println(Repo.checkHistory)
+  println(appCon.Repository.checkBalance)
   println(site.accountMap)
   println(site.accountList)
 
-  Repo.save(site)
 
 }

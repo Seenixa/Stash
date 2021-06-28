@@ -1,7 +1,7 @@
 package Banking
 
 class BankRepository(
-  val username:     String,
+  var username:     String = "",
   var password:     String = "",
   var emailAddress: String = "") {
 
@@ -46,6 +46,7 @@ class BankRepository(
           val pw = new PrintWriter(new File("Repositories.txt"))
           pw.write(s"$username\n$balance\n$password\n$emailAddress\n")
           pw.close
+          save(to)
         }
       } finally fw.close()
     }

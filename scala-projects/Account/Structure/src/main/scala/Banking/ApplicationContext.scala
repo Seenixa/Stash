@@ -1,4 +1,6 @@
 package Banking
-class ApplicationContext {
+class ApplicationContext (var Repository:BankRepository)
+    {
+  val Service = new BankService(Repository)
   
 }
