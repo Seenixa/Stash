@@ -1,6 +1,9 @@
 package Banking
-class ApplicationContext (var Repository:BankRepository)
-    {
-  val Service = new BankService(Repository)
-  
+class ApplicationContext(var Repository: BankRepository) {
+  var Service = new BankService(Repository)
+
+  def updateService = {
+    this.Service = new BankService(Repository)
+  }
+
 }

@@ -18,4 +18,17 @@ class BankService(
     }
   }
 
+  def transfer(amount: Int, to: BankRepository): Unit = {
+    if (amount > 0 && BankAccountRepo.getBalance > amount) {
+      withdraw(amount)
+      try {
+      to.changeBalance(amount)
+      } catch {
+        case _: Throwable => deposit(amount)
+      }
+      
+      to.writeHistory(s"\n$amount has been transferred from ${BankAccountRepo.username}.")
+    }
+  }
+
 }

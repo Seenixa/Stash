@@ -4,30 +4,52 @@ class Website {
   var accountList = List[BankRepository]()
   var accountMap = Map[String, BankRepository]()
 
-  def update = {
+  def updateAccountList = {
     accountList = loadToList
     accountMap = convertMap(accountList)
   }
-  
-  def resetTxt = {
-    import java.io._
-    val pw = new PrintWriter(new File("Repositories.txt"))
+
+  def refreshList = {
+    accountList = List()
+    for (account <- accountMap)
+      accountList = account._2 :: accountList
+  }
+
+  this.register("Guest", "")
+  val guest = login("Guest", "")
+  guest.Repository.emailAddress = "NULL "
+
+  def cleanSave = {
+    refreshList
+    accountList(0).resetTxt
+    for (account <- accountMap) {
+      account._2.save(this)
+    }
+  }
+
+  def register(username: String, password: String): Unit = {
+    if (!accountMap.contains(username)) {
+      var account = new BankRepository(username = username, password = password)
+      accountList = account :: accountList
+      accountMap = convertMap(accountList)
+      account.save(this)
+    } else throw new Error("Account already exists.")
   }
 
   def checkExistence(account: BankRepository): Boolean = {
     accountMap.contains(account.username)
   }
 
-  def login(username: String, password: String): BankRepository = {
-    var account = new BankRepository("")
-
+  def login(username: String, password: String): ApplicationContext = {
+    var account = new BankRepository()
     if (accountMap.contains(username)) {
       account = accountMap(username)
     } else throw new Error("Account does not exist.")
-
     if (account.password == password) {
       account
     } else throw new Error("Wrong password.")
+    var returnAccount = new ApplicationContext(account)
+    returnAccount
   }
 
   def loadToList: List[BankRepository] = {
@@ -53,7 +75,7 @@ class Website {
       action += 1
       if (action == 4)
         action = 0
-      if (tempRepo.getBalance != tempRepo.tempBalance.toInt)
+      if (tempRepo.tempBalance.toInt != tempRepo.getBalance)
         tempRepo.updateBalance
     }
     repoList

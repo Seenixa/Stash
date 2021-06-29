@@ -9,12 +9,12 @@ class BankRepository(
   var tempBalance = "0"
   private var history = ""
 
-  def getBalance: Int = {
-    balance
+  def updateBalance = {
+    balance = tempBalance.toInt
   }
 
-  def updateBalance: Unit = {
-    balance = tempBalance.toInt
+  def getBalance: Int = {
+    balance
   }
 
   def changeBalance(amount: Int): Unit = {
@@ -35,7 +35,7 @@ class BankRepository(
 
   def save(to: Website): Unit = {
     import java.io._
-    if (!to.checkExistence(this)) {
+    if (to.checkExistence(this)) {
       to.accountList = this :: to.accountList
       to.accountMap = to.convertMap(to.accountList)
       val fw = new FileWriter("Repositories.txt", true)
@@ -46,19 +46,24 @@ class BankRepository(
           val pw = new PrintWriter(new File("Repositories.txt"))
           pw.write(s"$username\n$balance\n$password\n$emailAddress\n")
           pw.close
-          save(to)
         }
       } finally fw.close()
     }
-    to.update
+    to.refreshList
+  }
+
+  def resetTxt = {
+    import java.io._
+    val pw = new PrintWriter(new File("Repositories.txt"))
+    pw.close
   }
 
   override def toString = s"""
     |username: $username
-    |balance: $tempBalance
+    |balance: $balance
     |password: $password
     |emailAddress: $emailAddress""".stripMargin
-
+    
 }
 
 
