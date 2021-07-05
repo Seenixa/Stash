@@ -1,0 +1,5 @@
+package campaign
+
+class SaveLoad {
+  
+}
