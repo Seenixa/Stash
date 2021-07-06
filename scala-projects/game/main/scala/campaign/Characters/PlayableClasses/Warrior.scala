@@ -1,4 +1,7 @@
-package campaign
+package campaign.characters.playableclasses
+import campaign.characters.Character
+import campaign.spells.Spells
+import campaign.spells.playablespells._
 
 class Warrior extends Character {
 

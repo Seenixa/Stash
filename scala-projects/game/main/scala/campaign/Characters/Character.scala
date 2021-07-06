@@ -1,4 +1,8 @@
-package campaign
+package campaign.characters
+import campaign.spells.Spells
+import campaign.items.Items
+import campaign.enemies.Enemies
+import campaign.characters.playableclasses._
 
 class Character {
 

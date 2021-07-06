@@ -1,4 +1,5 @@
-package campaign
+package campaign.spells
+import campaign.enemies.Enemies
 
 class Spells {
 

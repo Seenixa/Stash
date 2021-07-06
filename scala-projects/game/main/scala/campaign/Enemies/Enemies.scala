@@ -1,4 +1,4 @@
-package campaign
+package campaign.enemies
 
 class Enemies(
   var name:             String = "",

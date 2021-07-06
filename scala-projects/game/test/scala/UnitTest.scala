@@ -1,4 +1,8 @@
-package campaign
+package campaign.test
+import campaign.characters.Character
+import campaign.spells.Spells
+import campaign.spells.playablespells._
+import campaign.enemies.Enemies
 
 class UnitTest {
   var yourCharacter = new Character
@@ -21,7 +25,7 @@ class UnitTest {
   var enemy1 = new Enemies(name = "Akarmi", health = 300, minHitDamage = 1, maxHitDamage = 5)
   var enemy2 = new Enemies(name = "Akarmi", health = 300, minHitDamage = 1, maxHitDamage = 5)
   var enemy = new Enemies(name = "Akarmi", health = 400, minHitDamage = 1, maxHitDamage = 5)
-  var enemyList = List(enemy)
+  var enemyList = List(enemy, enemy1, enemy2)
   
   yourCharacter.agility = 150
   yourCharacter.learnSpell(new Ambush)

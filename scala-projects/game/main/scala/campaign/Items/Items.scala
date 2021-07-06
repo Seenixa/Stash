@@ -1,4 +1,4 @@
-package campaign
+package campaign.items
 
 class Items(
 

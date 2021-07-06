@@ -1,9 +1,10 @@
-package campaign
+package campaign.story
 
 object MainCampaign {
   def main (args: Array[String]) = {
     
-    val test = new UnitTest
+    var game = new Game
+    game.start
     
   }
 }
