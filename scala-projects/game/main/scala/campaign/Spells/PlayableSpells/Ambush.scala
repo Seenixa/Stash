@@ -1,14 +1,12 @@
 package campaign.spells.playablespells
 import campaign.spells.Spells
-import campaign.enemies.Enemies
+import campaign.characters.Character
 
 class Ambush extends Spells {
-
+  
   name = "Ambush"
-
-  override def cast(enemy: Enemies) = {
-    println("Casting Ambush")
-    enemy.getHit(damage)
+  
+  override def updateValues(char: Character) ={
+    damage = char.agility * 2
   }
-
 }

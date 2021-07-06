@@ -1,8 +1,13 @@
 package campaign.spells.playablespells
 import campaign.spells.Spells
-import campaign.enemies.Enemies
+import campaign.characters.Character
 
 class ShieldWall extends Spells {
-  name = "Shield wall" 
-  
+
+  name = "Shield wall"
+
+  override def updateValues(char: Character) = {
+    shielding = char.vitality * 3
+  }
+
 }

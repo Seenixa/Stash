@@ -36,12 +36,27 @@ class Character {
   }
 
   def getHit(amount: Int) = {
-    if (amount - armor > 0 && amount - armor < health)
-      health -= amount - armor
-    if (amount - armor > 0 && amount - armor >= health)
-      health = 0
-    if (amount > 0 && amount - armor < 0)
-      health -= 1
+    var shielded = 0
+    if (shield > 0) {
+      if (amount - armor > 0 && amount - armor >= shield) {
+        shield = 0
+        shielded = (amount - armor) - shield
+      }
+      if (amount - armor > 0 && amount - armor < shield)
+        shield -= amount - armor
+      if (amount - armor > 0 && amount - armor <= 0) {
+        shield -= 1
+        shielded = 1
+      }
+    }
+    if (shield == 0) {
+      if (amount - armor > 0 && (amount - armor) - shielded >= health)
+        health = 0
+      if (amount - armor > 0 && (amount - armor) - shielded < health)
+        health -= (amount - shielded) - armor
+      if (amount > 0 && amount - armor <= 0 && shielded != 1)
+        health -= 1
+    }
   }
 
   override def toString = s"""level:        $level
