@@ -2,6 +2,7 @@ package campaign.characters.playableclasses
 import campaign.characters.Character
 import campaign.spells.Spells
 import campaign.spells.playablespells._
+import campaign.spells.SpellHandler
 
 class Mage extends Character {
 
@@ -15,8 +16,10 @@ class Mage extends Character {
     health = vitality * 10
     mana = intelligence * 10
     var baseSpells = List[Spells](new Fireball, new Frostbolt)
-    for (spell <- baseSpells)
-      learnSpell(spell)
+    var spellStats = new SpellHandler
+    for (spell <- baseSpells) {
+      spellStats.learnSpell(this, spell)
+    }
   }
-  
+
 }

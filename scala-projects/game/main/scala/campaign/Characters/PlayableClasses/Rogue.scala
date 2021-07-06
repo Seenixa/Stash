@@ -2,6 +2,7 @@ package campaign.characters.playableclasses
 import campaign.characters.Character
 import campaign.spells.Spells
 import campaign.spells.playablespells._
+import campaign.spells.SpellHandler
 
 class Rogue extends Character {
 
@@ -15,11 +16,10 @@ class Rogue extends Character {
     health = vitality * 10
     mana = intelligence * 10
     var baseSpells = List[Spells](new Ambush, new PoisonShot)
-    for (spell <- baseSpells){
-      learnSpell(spell)
-      
+    var spellStats = new SpellHandler
+    for (spell <- baseSpells) {
+      spellStats.learnSpell(this, spell)
     }
   }
 
-  
 }

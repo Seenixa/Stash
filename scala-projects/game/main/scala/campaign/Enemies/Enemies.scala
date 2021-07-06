@@ -8,6 +8,11 @@ class Enemies(
   var armor:            Int    = 0,
   var experienceReward: Int    = 0) {
 
+  var chillDuration = 0
+  var burnDuration = 0
+  var poisonDuration = 0
+  var stunDuration = 0
+
   def getHit(amount: Int) = {
     if (amount - armor > 0 && amount - armor >= health)
       health = 0
