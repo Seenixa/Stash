@@ -8,8 +8,11 @@ class SpellHandler {
     if (!caster.spellBook.contains(spell.name))
       println("Spell not learned.")
     if (caster.spellBook.contains(spell.name)) {
-      println(s"Casting $spell.name.")
-      target.getHit(spell.damage)
+      println(s"Casting ${spell.name}.")
+      if (spell.damage > 0) {
+        target.getHit(spell.damage)
+        println(s"You hit for ${spell.damage}")
+      }
       target.burnDuration += spell.burnDuration
       target.chillDuration += spell.chillDuration
       target.poisonDuration += spell.poisonDuration

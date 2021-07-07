@@ -1,8 +1,6 @@
 package campaign.characters
-import campaign.spells.Spells
 import campaign.items.Items
-import campaign.enemies.Enemies
-import campaign.characters.playableclasses._
+import campaign.spells.Spells
 
 class Character {
 
@@ -19,7 +17,7 @@ class Character {
   var maxHealth: Int = 0
   var health: Int = 0
   var experience: Int = 0
-  var experienceToNextLevel = 100
+  var experienceToNextLevel = 150
   var maxMana: Int = 0
   var mana: Int = 0
   var shield: Int = 0
@@ -34,27 +32,31 @@ class Character {
 
   def getBaseStats = {
   }
+  
+  def updateStats = {
+  }
 
   def getHit(amount: Int) = {
     var shielded = 0
+    var hit = amount - armor
     if (shield > 0) {
-      if (amount - armor > 0 && amount - armor >= shield) {
+      if (amount > 0 && hit >= shield) {
         shield = 0
-        shielded = (amount - armor) - shield
+        shielded = hit - shield
       }
-      if (amount - armor > 0 && amount - armor < shield)
-        shield -= amount - armor
-      if (amount - armor > 0 && amount - armor <= 0) {
+      if (amount > 0 && hit < shield)
+        shield -= hit
+      if (amount > 0 && hit <= 0) {
         shield -= 1
         shielded = 1
       }
     }
     if (shield == 0) {
-      if (amount - armor > 0 && (amount - armor) - shielded >= health)
+      if (amount > 0 && hit - shielded >= health)
         health = 0
-      if (amount - armor > 0 && (amount - armor) - shielded < health)
-        health -= (amount - shielded) - armor
-      if (amount > 0 && amount - armor <= 0 && shielded != 1)
+      if (amount > 0 && hit - shielded < health)
+        health -= (hit - shielded) 
+      if (hit - armor <= 0 && shielded != 1)
         health -= 1
     }
   }

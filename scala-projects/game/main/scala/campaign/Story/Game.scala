@@ -1,6 +1,8 @@
 package campaign.story
 import campaign.characters.Character
-import campaign.characters.playableclasses._
+import campaign.characters.playableclasses.Mage
+import campaign.characters.playableclasses.Rogue
+import campaign.characters.playableclasses.Warrior
 import campaign.test.UnitTest
 
 class Game {
@@ -9,10 +11,27 @@ class Game {
     var gameStart = new UnitTest
   }
 
+  def inputNumber = {
+    var input = 0
+    do
+      try {
+        input = scala.io.StdIn.readInt()
+      } catch {
+        case _: Throwable => println("Try inputting a number this time.")
+      }
+    while (input.getClass.getSimpleName != "int" || input < 1)
+    input
+  }
+
   def chooseCharacterClass(classId: Int): Character = {
     var newChar = new Character
-    if (classId > 0 && classId <= 3) {
-      classId match {
+    var choice = classId
+    while (choice < 0 || choice > 3) {
+      println("Choice doesn't exist, pick again.")
+      choice = scala.io.StdIn.readInt()
+    }
+    if (choice > 0 && choice <= 3) {
+      choice match {
         case 1 => newChar = new Warrior
         case 2 => newChar = new Rogue
         case 3 => newChar = new Mage

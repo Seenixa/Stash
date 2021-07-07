@@ -1,6 +1,6 @@
 package campaign.spells.playablespells
-import campaign.spells.Spells
 import campaign.characters.Character
+import campaign.spells.Spells
 
 class ShieldBash extends Spells {
 
