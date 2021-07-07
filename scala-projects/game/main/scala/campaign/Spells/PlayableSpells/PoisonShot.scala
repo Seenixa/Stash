@@ -1,7 +1,14 @@
 package campaign.spells.playablespells
+import campaign.characters.Character
 import campaign.spells.Spells
-import campaign.enemies.Enemies
 
 class PoisonShot extends Spells {
+
   name = "Poison shot"
+  
+  override def updateValues(char: Character) = {
+    damage = char.agility
+    poisonDuration = char.agility / 5
+  }
+  
 }

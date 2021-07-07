@@ -1,5 +1,6 @@
 package campaign.characters.playableclasses
 import campaign.characters.Character
+import campaign.spells.SpellHandler
 import campaign.spells.Spells
 import campaign.spells.playablespells._
 
@@ -12,14 +13,26 @@ class Rogue extends Character {
     vitality = 10
     minHitDamage = (strength + agility) / 2
     maxHitDamage = strength + agility
-    health = vitality * 10
-    mana = intelligence * 10
+    maxHealth = vitality * 10
+    health = maxHealth
+    maxMana = intelligence * 10
+    mana = maxMana
     var baseSpells = List[Spells](new Ambush, new PoisonShot)
-    for (spell <- baseSpells){
-      learnSpell(spell)
-      
+    var spellStats = new SpellHandler
+    for (spell <- baseSpells) {
+      spellStats.learnSpell(this, spell)
     }
   }
 
-  
+  override def updateStats = {
+    minHitDamage = (strength + agility) / 2
+    maxHitDamage = strength + agility
+    maxHealth = vitality * 10
+    health = maxHealth
+    maxMana = intelligence * 10
+    mana = maxMana
+    for (spell <- spellBook)
+      spell._2.updateValues(this)
+  }
+
 }

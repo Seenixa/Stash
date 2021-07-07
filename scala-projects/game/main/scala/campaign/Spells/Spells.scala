@@ -1,8 +1,8 @@
 package campaign.spells
-import campaign.enemies.Enemies
+import campaign.characters.Character
+
 
 class Spells {
-
   var name = ""
   var damage = 0
   var healing = 0
@@ -12,7 +12,8 @@ class Spells {
   var poisonDuration = 0
   var stunDuration = 0
 
-  def cast(target: Enemies) = {
+  def updateValues(char: Character): Unit = {
+    
   }
 
   override def toString = s"$name 	$damage".stripMargin
