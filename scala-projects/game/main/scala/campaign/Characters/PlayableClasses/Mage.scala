@@ -3,6 +3,7 @@ import campaign.characters.Character
 import campaign.spells.SpellHandler
 import campaign.spells.Spells
 import campaign.spells.playablespells._
+import campaign.io.Printer
 
 class Mage extends Character {
 
@@ -18,13 +19,13 @@ class Mage extends Character {
     maxMana = intelligence * 10
     mana = maxMana
     var baseSpells = List[Spells](new Fireball, new Frostbolt)
-    var spellStats = new SpellHandler
     for (spell <- baseSpells) {
-      spellStats.learnSpell(this, spell)
+      spellHandler.learnSpell(this, spell)
     }
   }
   
   override def updateStats = {
+    stats.levelUp(this)
     minHitDamage = intelligence / 2
     maxHitDamage = intelligence
     maxHealth = vitality * 10

@@ -1,17 +1,20 @@
 package campaign.spells
 import campaign.characters.Character
 import campaign.enemies.Enemies
+import campaign.io.Printer
 
-class SpellHandler {
+class SpellHandler (
+    val printer:  Printer
+    ) {
 
   def cast(caster: Character, spell: Spells, target: Enemies) = {
     if (!caster.spellBook.contains(spell.name))
-      println("Spell not learned.")
+      printer.notLearned(spell)
     if (caster.spellBook.contains(spell.name)) {
-      println(s"Casting ${spell.name}.")
+      printer.casting(spell)
       if (spell.damage > 0) {
         target.getHit(spell.damage)
-        println(s"You hit for ${spell.damage}")
+        printer.spellHit(spell)
       }
       target.burnDuration += spell.burnDuration
       target.chillDuration += spell.chillDuration

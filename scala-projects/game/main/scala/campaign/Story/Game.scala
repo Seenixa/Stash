@@ -4,31 +4,24 @@ import campaign.characters.playableclasses.Mage
 import campaign.characters.playableclasses.Rogue
 import campaign.characters.playableclasses.Warrior
 import campaign.test.UnitTest
+import campaign.io._
 
-class Game {
+class Game (
+    val printer: Printer,
+    val utility: Utility
+    ) {
 
   def start = {
     var gameStart = new UnitTest
   }
-
-  def inputNumber = {
-    var input = 0
-    do
-      try {
-        input = scala.io.StdIn.readInt()
-      } catch {
-        case _: Throwable => println("Try inputting a number this time.")
-      }
-    while (input.getClass.getSimpleName != "int" || input < 1)
-    input
-  }
-
-  def chooseCharacterClass(classId: Int): Character = {
+  
+  def chooseCharacterClass: Character = {
+    printer.characterChoice
     var newChar = new Character
-    var choice = classId
+    var choice = utility.inputNumber
     while (choice < 0 || choice > 3) {
-      println("Choice doesn't exist, pick again.")
-      choice = scala.io.StdIn.readInt()
+      printer.wrongChoice
+      choice = utility.inputNumber
     }
     if (choice > 0 && choice <= 3) {
       choice match {

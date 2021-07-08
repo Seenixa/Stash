@@ -3,6 +3,7 @@ import campaign.characters.Character
 import campaign.spells.SpellHandler
 import campaign.spells.Spells
 import campaign.spells.playablespells._
+import campaign.io.Printer
 
 class Warrior extends Character {
 
@@ -18,13 +19,13 @@ class Warrior extends Character {
     maxMana = intelligence * 10
     mana = maxMana
     var baseSpells = List[Spells](new ShieldBash, new ShieldWall)
-    var spellStats = new SpellHandler
     for (spell <- baseSpells) {
-      spellStats.learnSpell(this, spell)
+      spellHandler.learnSpell(this, spell)
     }
   }
 
   override def updateStats = {
+    stats.levelUp(this)
     minHitDamage = strength
     maxHitDamage = strength * 2
     maxHealth = vitality * 10

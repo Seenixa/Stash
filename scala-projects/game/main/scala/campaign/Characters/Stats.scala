@@ -1,13 +1,23 @@
 package campaign.characters
-class Stats {
+import campaign.io.Printer
+
+class Stats (
+    val printer: Printer
+    ){
 
   def levelUp(char: Character) = {
+    var charLeveled = false
     while (char.experience >= char.experienceToNextLevel) {
       char.level += 1
       char.unspentSkillPoints += 5
       char.experienceToNextLevel += 100 + char.level * 50
+      printer.levelUp(char)
+      charLeveled = true
     }
-    char.updateStats
+    if (charLeveled == true){
+      char.updateStats
+      printer.unspentSkillPoints(char)
+    }
   }
   
   def levelTo(char: Character, level: Int) = {
@@ -17,13 +27,6 @@ class Stats {
     var sumExp = ((expToLevel + expToLastLevel) * (level - 1)) / 2
     char.experience = sumExp
     levelUp(char)
-  }
-  
-  def calculateExperience(char: Character) = {
-    var exp = 0
-    var d = 0
-    var sum = 0
-    
   }
 
   def spendSkillPoint(char: Character, stat: String) = {

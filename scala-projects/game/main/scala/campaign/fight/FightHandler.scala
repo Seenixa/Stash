@@ -1,12 +1,14 @@
-package main.scala.campaign.fight
+package campaign.fight
 import campaign.characters.Character
 import campaign.enemies.Enemies
 import campaign.spells.SpellHandler
 import campaign.story.Game
+import campaign.io._
 
 class FightHandler(
-  var setup:         Game,
-  var spellHandling: SpellHandler) {
+  val utility:      Utility,
+  val printer:      Printer,
+  val spellHandler: SpellHandler) {
 
   var random = scala.util.Random
 
@@ -15,9 +17,7 @@ class FightHandler(
     var enemyHealth = 1
     var enemyHitDamage = 0
     while (enemyHealth > 0 && char.health > 0 && counter < 30) {
-      println(s"Your HP: ${char.health}")
-      if (char.shield > 0)
-        println(s"Your shield: ${char.shield}")
+      printer.yourHp(char)
       fightMove(char, enemies)
       enemyHealth = 0
       for (enemy <- enemies) {
@@ -25,22 +25,27 @@ class FightHandler(
         if (enemy.health > 0) {
           enemyHitDamage = random.nextInt(enemy.maxHitDamage - enemy.minHitDamage + 1) + enemy.minHitDamage
           char.getHit(enemyHitDamage)
-          println(s"You got hit for $enemyHitDamage")
+          printer.youGotHit(enemyHitDamage)
         }
       }
       if (char.health == 0)
-        println("Your character decided to lay down.")
-      if (enemyHealth == 0)
-        println("They're dead.. All of them.")
+        printer.youDied(char)
+      if (enemyHealth == 0){
+        printer.fightEnd(char, enemies)
+        var enemyExpValue = 0
+        for (enemy <- enemies)
+          enemyExpValue += enemy.experienceReward
+        char.experience += enemyExpValue
+        printer.experienceGained(enemyExpValue, char)
+        char.updateStats
+      }
       counter += 1
     }
   }
 
   def fightMove(char: Character, enemies: List[Enemies]): Unit = {
-    println(s"""|  *** Action ****
-                |1. Attack  ${char.minHitDamage} - ${char.maxHitDamage} 
-                |2. Skills""".stripMargin)
-    var choice = setup.inputNumber
+    printer.fightMove(char)
+    var choice = utility.inputNumber
     var counter = 1
     var target = 1
     var spellChoice = 1
@@ -48,36 +53,26 @@ class FightHandler(
     var yourHit = 0
     choice match {
       case 1 => {
-        println("  *** Target ***")
-        for (enemy <- enemies) {
-          println(s"$target. ${enemy.name}  ${enemy.health} HP")
-          target += 1
-        }
-        println(s"$target. Back")
-        target = setup.inputNumber
+        printer.fightTargets(char, enemies)
+        target = utility.inputNumber
         if (target == enemies.length + 1)
           fightMove(char, enemies)
         else {
           if (enemies(target - 1).health == 0) {
-            println(s"Stop! Stop! It's already dead!")
+            printer.alreadyDead(enemies(target - 1))
             fightMove(char, enemies)
           } else {
             yourHit = random.nextInt(char.maxHitDamage - char.minHitDamage + 1) + char.minHitDamage
             enemies(target - 1).getHit(yourHit)
-            println(s"You hit for $yourHit")
+            printer.youHit(yourHit)
             if (enemies(target - 1).health == 0)
-              println(s"And another one bites the dust.")
+              printer.enemyDied(enemies(target - 1))
           }
         }
       }
       case 2 => {
-        println(" *** SpellBook ***")
-        for (spell <- char.spellBook) {
-          println(s"$counter. ${spell._1}  ${spell._2.damage}")
-          counter += 1
-        }
-
-        counter = setup.inputNumber
+        printer.spellBook(char)
+        counter = utility.inputNumber
         for (spell <- char.spellBook) {
           if (spellChoice == counter) {
             spellToCast = spell._1
@@ -85,26 +80,21 @@ class FightHandler(
           spellChoice += 1
         }
 
-        println("  *** Target ***")
-        for (enemy <- enemies) {
-          println(s"$target. ${enemy.name}  ${enemy.health} HP")
-          target += 1
-        }
-        println(s"$target. Back")
-        target = setup.inputNumber
+        printer.fightTargets(char, enemies)
+        target = utility.inputNumber
         if (target == enemies.length + 1)
           fightMove(char, enemies)
         else {
           if (enemies(target - 1).health == 0) {
-            println(s"Stop! Stop! It's already dead!")
+            printer.alreadyDead(enemies(target - 1))
             fightMove(char, enemies)
           } else {
             try {
-              spellHandling.cast(char, char.spellBook(s"$spellToCast"), enemies(target - 1))
+              spellHandler.cast(char, char.spellBook(s"$spellToCast"), enemies(target - 1))
               if (enemies(target - 1).health == 0)
-                println(s"And another one bites the dust.")
+                printer.enemyDied(enemies(target - 1))
             } catch {
-              case e: NoSuchElementException => println("You can't cast that.")
+              case e: NoSuchElementException => printer.notLearned(char.spellBook(s"$spellToCast"))
             }
           }
         }
