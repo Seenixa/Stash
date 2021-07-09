@@ -28,10 +28,8 @@ class Mage extends Character {
     stats.levelUp(this)
     minHitDamage = intelligence / 2
     maxHitDamage = intelligence
-    maxHealth = vitality * 10
-    health = maxHealth
     maxMana = intelligence * 10
-    mana = maxMana
+    maxHealth = vitality * 10
     for (spell <- spellBook)
       spell._2.updateValues(this)
   }

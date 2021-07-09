@@ -5,7 +5,7 @@ class Stats (
     val printer: Printer
     ){
 
-  def levelUp(char: Character) = {
+  def levelUp(char: Character): Boolean = {
     var charLeveled = false
     while (char.experience >= char.experienceToNextLevel) {
       char.level += 1
@@ -16,8 +16,11 @@ class Stats (
     }
     if (charLeveled == true){
       char.updateStats
+      char.health = char.maxHealth
+      char.mana = char.maxMana
       printer.unspentSkillPoints(char)
     }
+    charLeveled
   }
   
   def levelTo(char: Character, level: Int) = {
@@ -41,9 +44,11 @@ class Stats (
         case "intelligence" =>
           char.unspentSkillPoints -= 1
           char.intelligence += 1
+          char.mana += 10
         case "vitality" =>
           char.unspentSkillPoints -= 1
           char.vitality += 1
+          char.health += 10
         case _ => println(s"We can't apply your point to $stat")
       }
     } else println("You don't have any skill points left.")

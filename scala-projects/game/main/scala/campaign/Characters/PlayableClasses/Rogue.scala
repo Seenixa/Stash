@@ -28,10 +28,8 @@ class Rogue extends Character {
     stats.levelUp(this)
     minHitDamage = (strength + agility) / 2
     maxHitDamage = strength + agility
-    maxHealth = vitality * 10
-    health = maxHealth
     maxMana = intelligence * 10
-    mana = maxMana
+    maxHealth = vitality * 10
     for (spell <- spellBook)
       spell._2.updateValues(this)
   }

@@ -15,9 +15,12 @@ class UnitTest {
   
   appCon.stats.levelTo(yourCharacter, 30)
   
-  val enemy = new Enemies(name = "Whoever", health = 50, minHitDamage = 10, maxHitDamage = 30, experienceReward = 2000)
-  val enemy1 = new Enemies(name = "Whatever", health = 50, minHitDamage = 10, maxHitDamage = 30, experienceReward = 2000)
-  val enemy2 = new Enemies(name = "Wherever", health = 50, minHitDamage = 10, maxHitDamage = 30, experienceReward = 2000)
+  val enemy = new Enemies(name = "Whoever", maxHealth = 300, 
+      minHitDamage = 10, maxHitDamage = 30, experienceReward = 2)
+  val enemy1 = new Enemies(name = "Whatever", maxHealth = 530, 
+      minHitDamage = 10, maxHitDamage = 30, experienceReward = 2)
+  val enemy2 = new Enemies(name = "Wherever", maxHealth = 50, 
+      minHitDamage = 10, maxHitDamage = 30, experienceReward = 2)
   val enemies = List(enemy, enemy1, enemy2)
   
   appCon.stats.SpendMoreSkillPoints(yourCharacter, "vitality", 30)
@@ -26,6 +29,7 @@ class UnitTest {
   appCon.stats.SpendMoreSkillPoints(yourCharacter, "agility", 30)
   
   appCon.fightHandler.fight(yourCharacter, enemies)
+  appCon.printer.character(yourCharacter)
   
 
 }

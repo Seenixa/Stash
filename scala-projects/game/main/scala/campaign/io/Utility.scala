@@ -1,6 +1,8 @@
 package campaign.io
 
-class Utility {
+class Utility (
+  val printer: Printer    
+  ) {
 
   def inputNumber = {
     var input = 0
@@ -8,7 +10,7 @@ class Utility {
       try {
         input = scala.io.StdIn.readInt()
       } catch {
-        case _: Throwable => println("Try inputting a number this time.")
+        case _: Throwable => printer.wrongInputNumber
       }
     while (input.getClass.getSimpleName != "int" || input < 1)
     input

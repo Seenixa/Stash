@@ -6,6 +6,10 @@ import campaign.enemies.Enemies
 
 class Printer {
 
+  def character(char: Character) = {
+    println(s"$char")
+  }
+  
   def casting(spell: Spells) = {
     println(s"Casting ${spell.name}")
   }
@@ -13,9 +17,14 @@ class Printer {
   def notLearned(spell: Spells) = {
     println(s"Your character has not learned ${spell.name} yet.")
   }
-
+  
+  def notEnoughMana(spell: Spells) = {
+    println(s"You don't have enough mana to cast ${spell.name}")
+  }
+  
   def spellHit(spell: Spells) = {
-    println(s"You hit for ${spell.damage}")
+    if (spell.damage > 0)
+      println(s"You hit for ${spell.damage}")
   }
 
   def yourHp(char: Character) = {
@@ -23,13 +32,19 @@ class Printer {
     if (char.shield > 0)
       println(s"Your shield: ${char.shield}")
   }
+  
+  def yourMana(char: Character) = {
+    println(s"Your mana: ${char.mana}/${char.maxMana}")
+  }
 
   def youHit(damage: Int) = {
-    println(s"You hit for $damage")
+    if (damage > 0)
+      println(s"You hit for $damage")
   }
 
   def youGotHit(damage: Int) = {
-    println(s"You got hit for $damage")
+    if (damage > 0)
+      println(s"You got hit for $damage")
   }
 
   def youDied(char: Character) = {
@@ -67,6 +82,34 @@ class Printer {
     }
     println(s"$target. back")
   }
+  
+  def enemyBurning(enemy: Enemies) = {
+    println(s"${enemy.name} got burned for ${enemy.maxHealth / 10} ")
+  }
+  
+  def charBurning(char: Character) = {
+    println(s"You got burned for ${char.maxHealth / 10}")
+  }
+  
+  def enemyPoisoned(enemy: Enemies) = {
+    println(s"${enemy.name} does not feel so good.")
+  }
+  
+  def charPoisoned(char: Character) = {
+    println(s"Mr. Stark... I don't feel so good.")
+  }
+  
+  def enemyStunned(enemy: Enemies) = {
+    println(s"${enemy.name} felt like skipping a turn.")
+  }
+  
+  def charStunned(char: Character) = {
+    println(s"Let's... just not move okay?")
+  }
+  
+  def notValidTarget = {
+    println(s"What are you aiming at?")
+  }
 
   def alreadyDead(enemy: Enemies) = {
     println(s"Stop! STOP! It's already dead.")
@@ -94,6 +137,10 @@ class Printer {
 
   def wrongChoice = {
     println("Choice doesn't exist, pick again.")
+  }
+  
+  def wrongInputNumber = {
+    println("Try inputting a number this time")
   }
 
 }
