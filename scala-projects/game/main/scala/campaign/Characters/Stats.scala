@@ -1,13 +1,26 @@
 package campaign.characters
-class Stats {
+import campaign.io.Printer
 
-  def levelUp(char: Character) = {
+class Stats (
+    val printer: Printer
+    ){
+
+  def levelUp(char: Character): Boolean = {
+    var charLeveled = false
     while (char.experience >= char.experienceToNextLevel) {
       char.level += 1
       char.unspentSkillPoints += 5
       char.experienceToNextLevel += 100 + char.level * 50
+      printer.levelUp(char)
+      charLeveled = true
     }
-    char.updateStats
+    if (charLeveled == true){
+      char.updateStats
+      char.health = char.maxHealth
+      char.mana = char.maxMana
+      printer.unspentSkillPoints(char)
+    }
+    charLeveled
   }
   
   def levelTo(char: Character, level: Int) = {
@@ -17,13 +30,6 @@ class Stats {
     var sumExp = ((expToLevel + expToLastLevel) * (level - 1)) / 2
     char.experience = sumExp
     levelUp(char)
-  }
-  
-  def calculateExperience(char: Character) = {
-    var exp = 0
-    var d = 0
-    var sum = 0
-    
   }
 
   def spendSkillPoint(char: Character, stat: String) = {
@@ -38,9 +44,11 @@ class Stats {
         case "intelligence" =>
           char.unspentSkillPoints -= 1
           char.intelligence += 1
+          char.mana += 10
         case "vitality" =>
           char.unspentSkillPoints -= 1
           char.vitality += 1
+          char.health += 10
         case _ => println(s"We can't apply your point to $stat")
       }
     } else println("You don't have any skill points left.")

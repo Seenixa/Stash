@@ -1,6 +1,7 @@
 package campaign.characters
 import campaign.items.Items
 import campaign.spells.Spells
+import campaign.ApplicationContext
 
 class Character {
 
@@ -25,6 +26,10 @@ class Character {
   var poisonDuration = 0
   var chillDuration = 0
   var stunDuration = 0
+  val appCon = new ApplicationContext
+  val printer = appCon.printer
+  val stats = appCon.stats
+  val spellHandler = appCon.spellHandler
   val random = scala.util.Random
 
   var inventory = Map[String, Items]()
@@ -32,8 +37,15 @@ class Character {
 
   def getBaseStats = {
   }
-  
+
   def updateStats = {
+  }
+
+  def pierceGetHit(amount: Int) = {
+    if (amount > 0 && amount >= health)
+      health = 0
+    if (amount > 0 && amount < health)
+      health -= amount
   }
 
   def getHit(amount: Int) = {
@@ -55,8 +67,8 @@ class Character {
       if (amount > 0 && hit - shielded >= health)
         health = 0
       if (amount > 0 && hit - shielded < health)
-        health -= (hit - shielded) 
-      if (hit - armor <= 0 && shielded != 1)
+        health -= (hit - shielded)
+      if (amount > 0 && hit <= 0 && shielded != 1)
         health -= 1
     }
   }
@@ -68,6 +80,7 @@ class Character {
                              |intelligence: $intelligence
                              |vitality:     $vitality
                              |health:       $health
+                             |mana:         $mana
                              |armor:        $armor
                              |experience:   $experience
                              |""".stripMargin

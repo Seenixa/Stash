@@ -3,6 +3,7 @@ import campaign.characters.Character
 import campaign.spells.SpellHandler
 import campaign.spells.Spells
 import campaign.spells.playablespells._
+import campaign.io.Printer
 
 class Rogue extends Character {
 
@@ -18,19 +19,17 @@ class Rogue extends Character {
     maxMana = intelligence * 10
     mana = maxMana
     var baseSpells = List[Spells](new Ambush, new PoisonShot)
-    var spellStats = new SpellHandler
     for (spell <- baseSpells) {
-      spellStats.learnSpell(this, spell)
+      spellHandler.learnSpell(this, spell)
     }
   }
 
   override def updateStats = {
+    stats.levelUp(this)
     minHitDamage = (strength + agility) / 2
     maxHitDamage = strength + agility
-    maxHealth = vitality * 10
-    health = maxHealth
     maxMana = intelligence * 10
-    mana = maxMana
+    maxHealth = vitality * 10
     for (spell <- spellBook)
       spell._2.updateValues(this)
   }

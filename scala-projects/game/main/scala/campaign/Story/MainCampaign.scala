@@ -1,10 +1,12 @@
 package campaign.story
 
+import campaign.ApplicationContext
+
 object MainCampaign {
   def main (args: Array[String]) = {
     
-    val game = new Game
-    game.start
+    val appCon = new ApplicationContext
+    appCon.game.start
     
   }
 }

@@ -5,6 +5,7 @@ import campaign.spells.Spells
 class Fireball extends Spells {
 
   name = "Fireball"
+  manaCost = 30
 
   override def updateValues(char: Character) = {
     damage = char.intelligence * 2
