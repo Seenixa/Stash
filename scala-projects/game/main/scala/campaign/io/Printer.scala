@@ -1,8 +1,7 @@
-package campaign.io
+package main.scala.campaign.io
 
 import campaign.spells.Spells
 import campaign.characters.Character
-import campaign.enemies.Enemies
 
 class Printer {
 
@@ -10,12 +9,16 @@ class Printer {
     println(s"$char")
   }
   
+  def cantUpgradeStats(char: Character) = {
+    println(s"You can upgrade the stats on this one ${char.getClass.getSimpleName}")
+  }
+  
   def casting(spell: Spells) = {
     println(s"Casting ${spell.name}")
   }
 
-  def notLearned(spell: Spells) = {
-    println(s"Your character has not learned ${spell.name} yet.")
+  def notLearned = {
+    println(s"Use spells you already know please.")
   }
   
   def notEnoughMana(spell: Spells) = {
@@ -51,7 +54,7 @@ class Printer {
     println(s"Mission failed. We'll get 'em next time.")
   }
 
-  def fightEnd(char: Character, enemies: List[Enemies]) = {
+  def fightEnd(char: Character, enemies: List[Character]) = {
     println(s"Let the bodies hit the FLOOOOOOOR!")
   }
   
@@ -67,13 +70,22 @@ class Printer {
     println(s"You have ${char.unspentSkillPoints} unspent skill points.")
   }
   
+  def spentSkillPoints(stat: String, times: Int) = {
+    println(s"You spent $times points on $stat")
+  }
+  
   def fightMove(char: Character) = {
     println(s"""|  *** Action ****
                 |1. Attack  ${char.minHitDamage} - ${char.maxHitDamage} 
-                |2. Skills""".stripMargin)
+                |2. Skills
+                |3. Skip turn""".stripMargin)
+  }
+  
+  def turnSkipped = {
+    println("You've skipped your turn.")
   }
 
-  def fightTargets(char: Character, enemies: List[Enemies]) = {
+  def fightTargets(char: Character, enemies: List[Character]) = {
     var target = 1
     println("  *** Target ***")
     for (enemy <- enemies) {
@@ -83,7 +95,7 @@ class Printer {
     println(s"$target. back")
   }
   
-  def enemyBurning(enemy: Enemies) = {
+  def enemyBurning(enemy: Character) = {
     println(s"${enemy.name} got burned for ${enemy.maxHealth / 10} ")
   }
   
@@ -91,7 +103,7 @@ class Printer {
     println(s"You got burned for ${char.maxHealth / 10}")
   }
   
-  def enemyPoisoned(enemy: Enemies) = {
+  def enemyPoisoned(enemy: Character) = {
     println(s"${enemy.name} does not feel so good.")
   }
   
@@ -99,7 +111,7 @@ class Printer {
     println(s"Mr. Stark... I don't feel so good.")
   }
   
-  def enemyStunned(enemy: Enemies) = {
+  def enemyStunned(enemy: Character) = {
     println(s"${enemy.name} felt like skipping a turn.")
   }
   
@@ -111,11 +123,11 @@ class Printer {
     println(s"What are you aiming at?")
   }
 
-  def alreadyDead(enemy: Enemies) = {
+  def alreadyDead(enemy: Character) = {
     println(s"Stop! STOP! It's already dead.")
   }
 
-  def enemyDied(enemy: Enemies) = {
+  def enemyDied(enemy: Character) = {
     println(s"And another one bites the dust.")
   }
 
@@ -141,6 +153,23 @@ class Printer {
   
   def wrongInputNumber = {
     println("Try inputting a number this time")
+  }
+  
+  def quit = {
+    println("To quit the game choose '9'.")
+  }
+  
+  def notYet = {
+    println("Is not in the program yet")
+  }
+  
+  def testMenuOne = {
+    println(s"""|1. Setup stats for your Character.
+                |2. Setup stats for an enemy.
+                |3. Setup multiple Enemies.
+                |4. Fight single enemy. (if setup with option "2")
+                |5. Fight group of enemies. (if setup with option "3")
+                |9. Quit""".stripMargin)
   }
 
 }
