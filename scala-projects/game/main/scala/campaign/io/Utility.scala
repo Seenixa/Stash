@@ -1,5 +1,7 @@
 package campaign.io
 
+import main.scala.campaign.io.Printer
+
 class Utility (
   val printer: Printer    
   ) {

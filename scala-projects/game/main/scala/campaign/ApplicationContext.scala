@@ -3,8 +3,9 @@ package campaign
 import campaign.characters.Stats
 import campaign.io._
 import campaign.spells.SpellHandler
-import campaign.story.Game
+import campaign.gameMain.Game
 import campaign.fight.FightHandler
+import main.scala.campaign.io.Printer
 
 class ApplicationContext {
   val printer = new Printer
