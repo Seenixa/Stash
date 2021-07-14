@@ -1,6 +1,6 @@
 package campaign.maps
 import campaign.ApplicationContext
-import campaign.characters.Character
+import campaign.characters._
 
 class TestMap(val appCon: ApplicationContext) {
 
@@ -10,9 +10,9 @@ class TestMap(val appCon: ApplicationContext) {
   var characterSetup = false
   var enemySetup = false
   var enemiesSetup = false
-  var singleEnemy = new Character
-  var enemies = List[Character]()
-  var yourCharacter = new Character
+  var singleEnemy = new NpcCharacter
+  var enemies = List[NpcCharacter]()
+  var yourCharacter = new PlayerCharacter
 
   while (end == false) {
     appCon.printer.quit
@@ -22,6 +22,10 @@ class TestMap(val appCon: ApplicationContext) {
       choice match {
         case 1 => {
           yourCharacter = appCon.game.chooseCharacterClass
+          for (spell <- yourCharacter.baseSpells) {
+            appCon.spellStats.learnSpell(yourCharacter, spell)
+            appCon.stats.updateStats(yourCharacter)
+          }
           println("strength:")
           takeInput = appCon.utility.inputNumber
           while (yourCharacter.unspentSkillPoints < takeInput) {
@@ -60,7 +64,7 @@ class TestMap(val appCon: ApplicationContext) {
         }
 
         case 2 => {
-          singleEnemy = new Character
+          singleEnemy = new NpcCharacter
           println("enemy health:")
           takeInput = appCon.utility.inputNumber
           singleEnemy.health = takeInput
@@ -76,14 +80,14 @@ class TestMap(val appCon: ApplicationContext) {
         }
 
         case 3 => {
-          var enemy = new Character
-          enemies = List[Character]()
+          var enemy = new NpcCharacter
+          enemies = List[NpcCharacter]()
           println("How many enemies? (Max 3)")
           takeInput = appCon.utility.inputNumber
           while (takeInput < 0 || takeInput > 3)
             takeInput = appCon.utility.inputNumber
           for (enemyID <- 0 until takeInput) {
-            enemy = new Character
+            enemy = new NpcCharacter
             println("enemy health:")
             takeInput = appCon.utility.inputNumber
             enemy.maxHealth = takeInput
@@ -100,7 +104,7 @@ class TestMap(val appCon: ApplicationContext) {
           enemiesSetup = true
         }
         case 4 => {
-          if (enemySetup == true) {
+          if (enemySetup) {
             appCon.fightHandler.fight(yourCharacter, List(singleEnemy))
             enemySetup = false
             if (yourCharacter.health == 0)
@@ -108,14 +112,26 @@ class TestMap(val appCon: ApplicationContext) {
           }
         }
         case 5 => {
-          if (enemiesSetup == true) {
+          if (enemiesSetup) {
             appCon.fightHandler.fight(yourCharacter, enemies)
             enemiesSetup = false
             if (yourCharacter.health == 0)
               characterSetup = false
           }
         }
-
+        case 6 => {
+          if (characterSetup)
+            appCon.printer.character(yourCharacter)
+        }
+        case 7 => {
+          if (enemySetup)
+            appCon.printer.enemy(singleEnemy)
+        }
+        case 8 => {
+          if (enemiesSetup)
+            for (enemy <- enemies)
+              appCon.printer.enemy(enemy)
+        }
         case 9 =>
           end = true
         case _ => appCon.printer.wrongChoice

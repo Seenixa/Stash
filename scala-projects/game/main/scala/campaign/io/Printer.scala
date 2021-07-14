@@ -1,7 +1,7 @@
-package main.scala.campaign.io
+package campaign.io
 
 import campaign.spells.Spells
-import campaign.characters.Character
+import campaign.characters._
 
 class Printer {
 
@@ -9,7 +9,11 @@ class Printer {
     println(s"$char")
   }
   
-  def cantUpgradeStats(char: Character) = {
+  def enemy(enemy: NpcCharacter) = {
+    println(s"$enemy")
+  }
+  
+  def cantUpgradeStats(char: PlayerCharacter) = {
     println(s"You can upgrade the stats on this one ${char.getClass.getSimpleName}")
   }
   
@@ -30,13 +34,13 @@ class Printer {
       println(s"You hit for ${spell.damage}")
   }
 
-  def yourHp(char: Character) = {
+  def yourHp(char: PlayerCharacter) = {
     println(s"Your HP: ${char.health}/${char.maxHealth}")
     if (char.shield > 0)
       println(s"Your shield: ${char.shield}")
   }
   
-  def yourMana(char: Character) = {
+  def yourMana(char: PlayerCharacter) = {
     println(s"Your mana: ${char.mana}/${char.maxMana}")
   }
 
@@ -50,23 +54,23 @@ class Printer {
       println(s"You got hit for $damage")
   }
 
-  def youDied(char: Character) = {
+  def youDied(char: PlayerCharacter) = {
     println(s"Mission failed. We'll get 'em next time.")
   }
 
-  def fightEnd(char: Character, enemies: List[Character]) = {
+  def fightEnd(char: PlayerCharacter, enemies: List[NpcCharacter]) = {
     println(s"Let the bodies hit the FLOOOOOOOR!")
   }
   
-  def experienceGained(amount: Int, char: Character) {
+  def experienceGained(amount: Int, char: PlayerCharacter) {
     println(s"You've gained $amount experience.")
   }
   
-  def levelUp(char: Character) = {
+  def levelUp(char: PlayerCharacter) = {
     println(s"Level ${char.level} reached!")
   }
 
-  def unspentSkillPoints(char: Character) = {
+  def unspentSkillPoints(char: PlayerCharacter) = {
     println(s"You have ${char.unspentSkillPoints} unspent skill points.")
   }
   
@@ -74,7 +78,7 @@ class Printer {
     println(s"You spent $times points on $stat")
   }
   
-  def fightMove(char: Character) = {
+  def fightMove(char: PlayerCharacter) = {
     println(s"""|  *** Action ****
                 |1. Attack  ${char.minHitDamage} - ${char.maxHitDamage} 
                 |2. Skills
@@ -85,7 +89,7 @@ class Printer {
     println("You've skipped your turn.")
   }
 
-  def fightTargets(char: Character, enemies: List[Character]) = {
+  def fightTargets(char: PlayerCharacter, enemies: List[NpcCharacter]) = {
     var target = 1
     println("  *** Target ***")
     for (enemy <- enemies) {
@@ -123,15 +127,15 @@ class Printer {
     println(s"What are you aiming at?")
   }
 
-  def alreadyDead(enemy: Character) = {
+  def alreadyDead(enemy: NpcCharacter) = {
     println(s"Stop! STOP! It's already dead.")
   }
 
-  def enemyDied(enemy: Character) = {
+  def enemyDied(enemy: NpcCharacter) = {
     println(s"And another one bites the dust.")
   }
 
-  def spellBook(char: Character) = {
+  def spellBook(char: PlayerCharacter) = {
     var counter = 1
     println(" *** SpellBook ***")
     for (spell <- char.spellBook) {
@@ -148,7 +152,7 @@ class Printer {
   }
 
   def wrongChoice = {
-    println("Choice doesn't exist, pick again.")
+    println("You can't milk those!")
   }
   
   def wrongInputNumber = {
@@ -169,6 +173,9 @@ class Printer {
                 |3. Setup multiple Enemies.
                 |4. Fight single enemy. (if setup with option "2")
                 |5. Fight group of enemies. (if setup with option "3")
+                |6. Check your Character's stats. (if setup with option "1")
+                |7. Check your enemy's stats. (if setup with option "2")
+                |8. Check your enemies's stats. (if setup with option "3")
                 |9. Quit""".stripMargin)
   }
 

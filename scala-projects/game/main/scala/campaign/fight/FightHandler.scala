@@ -1,9 +1,7 @@
 package campaign.fight
-import campaign.characters.Character
+import campaign.characters._
 import campaign.spells.SpellHandler
 import campaign.io._
-import main.scala.campaign.io.Printer
-import scala.util.Either
 
 class FightHandler(
   val utility:      Utility,
@@ -12,7 +10,7 @@ class FightHandler(
 
   var random = scala.util.Random
 
-  def fight(char: Character, enemies: List[Character]) = {
+  def fight(char: PlayerCharacter, enemies: List[NpcCharacter]) = {
     var counter = 0
     var enemyHealth = 1
     var enemyHitDamage = 0
@@ -27,13 +25,11 @@ class FightHandler(
           enemyHitDamage = random.nextInt(enemy.maxHitDamage - enemy.minHitDamage + 1) + enemy.minHitDamage
           enemyHitDamage = applyStatusEffects(enemy, enemyHitDamage)
           getHit(char, enemyHitDamage)
-          printer.youGotHit(enemyHitDamage)
+          printer.youGotHit(enemyHitDamage - char.armor)
         }
       }
       if (char.health == 0)
         printer.youDied(char)
-      for (enemy <- enemies)
-        enemyHealth += enemy.health
       if (enemyHealth == 0) {
         printer.fightEnd(char, enemies)
         var enemyExpValue = 0
@@ -46,7 +42,12 @@ class FightHandler(
     }
   }
 
-  def fightMove(char: Character, enemies: List[Character]): Unit = {
+  def fightMove(char: PlayerCharacter, enemies: List[NpcCharacter]): Unit = {
+    var enemyHealth = 0
+    for (enemy <- enemies)
+      enemyHealth += enemy.health
+    if (enemyHealth <= 0)
+      return
     printer.fightMove(char)
     var choice = utility.inputNumber
     var counter = 1
@@ -68,7 +69,7 @@ class FightHandler(
             yourHit = random.nextInt(char.maxHitDamage - char.minHitDamage + 1) + char.minHitDamage
             yourHit = applyStatusEffects(char, yourHit)
             getHit(enemies(target - 1), yourHit)
-            printer.youHit(yourHit)
+            printer.youHit(yourHit - enemies(target - 1).armor)
             if (enemies(target - 1).health == 0)
               printer.enemyDied(enemies(target - 1))
           }
@@ -124,7 +125,10 @@ class FightHandler(
     if (char.burnDuration > 0) {
       pierceGetHit(char, char.maxHealth / 10)
       char.burnDuration -= 1
-      printer.charBurning(char)
+      if (char.getClass.getSimpleName == "NpcCharacter")
+        printer.enemyBurning(char)
+      else
+        printer.charBurning(char)
     }
     if (char.chillDuration > 0) {
       hit = char.minHitDamage
@@ -133,12 +137,18 @@ class FightHandler(
     if (char.poisonDuration > 0) {
       pierceGetHit(char, 10)
       char.poisonDuration -= 1
-      printer.charPoisoned(char)
+      if (char.getClass.getSimpleName == "NpcCharacter")
+        printer.enemyPoisoned(char)
+      else
+        printer.charPoisoned(char)
     }
     if (char.stunDuration > 0) {
       hit = 0
       char.stunDuration -= 1
-      printer.charStunned(char)
+      if (char.getClass.getSimpleName == "NpcCharacter")
+        printer.enemyStunned(char)
+      else
+        printer.charStunned(char)
     }
     hit
   }
