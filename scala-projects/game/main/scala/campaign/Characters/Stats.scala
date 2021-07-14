@@ -1,10 +1,12 @@
 package campaign.characters
-import main.scala.campaign.io.Printer
+import campaign.io.Printer
+import campaign.spells.SpellStats
 
 class Stats(
-  val printer: Printer) {
+  val spellStats: SpellStats,
+  val printer:    Printer) {
 
-  def levelUp(char: Character): Boolean = {
+  def levelUp(char: PlayerCharacter): Boolean = {
     var charLeveled = false
     while (char.experience >= char.experienceToNextLevel) {
       char.level += 1
@@ -22,7 +24,7 @@ class Stats(
     charLeveled
   }
 
-  def levelTo(char: Character, level: Int) = {
+  def levelTo(char: PlayerCharacter, level: Int) = {
     var expToLevel = 100
     var difference = 50
     var expToLastLevel = expToLevel + level * difference
@@ -31,10 +33,9 @@ class Stats(
     levelUp(char)
   }
 
-  def updateStats(char: Character) = {
+  def updateStats(char: PlayerCharacter) = {
     levelUp(char)
-    for (spell <- char.spellBook)
-      spell._2.updateValues(char)
+    spellStats.updateSpellValues(char)
     char.maxHealth = char.vitality * 10
     char.maxMana = char.intelligence * 10
     char.getClass.getSimpleName match {
@@ -44,7 +45,7 @@ class Stats(
       }
       case "Rogue" => {
         char.minHitDamage = char.strength + char.agility / 2
-        char.maxHitDamage = char.strength + char.agility / 2
+        char.maxHitDamage = char.strength + char.agility
       }
       case "Mage" => {
         char.minHitDamage = char.intelligence / 2
@@ -54,7 +55,7 @@ class Stats(
     }
   }
 
-  def spendSkillPoint(char: Character, stat: String) = {
+  def spendSkillPoint(char: PlayerCharacter, stat: String) = {
     if (char.unspentSkillPoints > 0) {
       stat match {
         case "strength" =>
@@ -77,7 +78,7 @@ class Stats(
     updateStats(char)
   }
 
-  def SpendMoreSkillPoints(char: Character, stat: String, spendTimes: Int) = {
+  def SpendMoreSkillPoints(char: PlayerCharacter, stat: String, spendTimes: Int) = {
     for (i <- 0 until spendTimes)
       spendSkillPoint(char, stat)
     printer.spentSkillPoints(stat, spendTimes)

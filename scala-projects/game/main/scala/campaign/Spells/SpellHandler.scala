@@ -1,11 +1,11 @@
 package campaign.spells
-import campaign.characters.Character
-import main.scala.campaign.io.Printer
+import campaign.characters._
+import campaign.io.Printer
 
 class SpellHandler(
   val printer: Printer) {
 
-  def cast(caster: Character, spell: Spells, target: Character): Int = {
+  def cast(caster: PlayerCharacter, spell: Spells, target: NpcCharacter): Int = {
     if (caster.stunDuration <= 0) {
       if (!caster.spellBook.contains(spell.name))
         printer.notLearned
@@ -15,6 +15,7 @@ class SpellHandler(
         printer.casting(spell)
         if (spell.damage > 0) {
           printer.spellHit(spell)
+          target.health -= spell.damage
         }
         target.burnDuration += spell.burnDuration
         target.chillDuration += spell.chillDuration
@@ -28,17 +29,6 @@ class SpellHandler(
       }
     }
     spell.damage
-  }
-
-  def learnSpell(char: Character, spell: Spells) = {
-    char.spellBook += (spell.name -> spell)
-    updateSpellValues(char)
-  }
-
-  def updateSpellValues(char: Character) = {
-    for (spell <- char.spellBook) {
-      spell._2.updateValues(char)
-    }
   }
 
 }

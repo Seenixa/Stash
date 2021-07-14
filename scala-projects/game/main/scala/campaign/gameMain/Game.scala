@@ -1,13 +1,10 @@
 package campaign.gameMain
-import campaign.characters.Character
-import campaign.characters.playableclasses.Mage
-import campaign.characters.playableclasses.Rogue
-import campaign.characters.playableclasses.Warrior
+import campaign.characters.PlayerCharacter
+import campaign.characters.playableclasses._
 import campaign.test.UnitTest
 import campaign.ApplicationContext
 import campaign.maps._
 import campaign.io._
-import main.scala.campaign.io.Printer
 
 class Game (
     val printer: Printer,
@@ -22,9 +19,9 @@ class Game (
     }
   }
   
-  def chooseCharacterClass: Character = {
+  def chooseCharacterClass: PlayerCharacter = {
     printer.characterChoice
-    var newChar = new Character
+    var newChar = new PlayerCharacter
     var choice = utility.inputNumber
     while (choice < 0 || choice > 3) {
       printer.wrongChoice

@@ -1,12 +1,12 @@
 package campaign.test
-import campaign.characters.Character
+import campaign.characters._
 import campaign.fight.FightHandler
 import campaign.characters.Stats
 import campaign.ApplicationContext
 
 class UnitTest (val appCon: ApplicationContext) {
 
-  var yourCharacter = new Character
+  var yourCharacter = new PlayerCharacter
   yourCharacter = appCon.game.chooseCharacterClass
   
   appCon.stats.levelTo(yourCharacter, 30)

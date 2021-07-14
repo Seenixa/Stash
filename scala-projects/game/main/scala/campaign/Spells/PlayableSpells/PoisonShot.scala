@@ -5,11 +5,8 @@ import campaign.spells.Spells
 class PoisonShot extends Spells {
 
   name = "Poison shot"
+  damage = 40
+  poisonDuration = 3
   manaCost = 5
-  
-  override def updateValues(char: Character) = {
-    damage = char.agility
-    poisonDuration = char.agility / 5
-  }
   
 }
