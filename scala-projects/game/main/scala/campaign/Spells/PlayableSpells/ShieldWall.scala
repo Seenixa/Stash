@@ -1,5 +1,5 @@
 package campaign.spells.playablespells
-import campaign.characters.Character
+import campaign.characters.PlayerCharacter
 import campaign.spells.Spells
 
 class ShieldWall extends Spells {
@@ -8,4 +8,8 @@ class ShieldWall extends Spells {
   shielding = 50
   manaCost = 5
 
+  override def updateValues(char: PlayerCharacter) = {
+    shielding = char.vitality * 3
+  }
+  
 }

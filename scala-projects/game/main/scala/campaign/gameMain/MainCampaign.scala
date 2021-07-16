@@ -6,7 +6,7 @@ object MainCampaign {
   def main (args: Array[String]) = {
     
     val appCon = new ApplicationContext
-    appCon.game.start("TestMap", appCon)
+    appCon.game.start("UnitTest", appCon)
     
   }
 }

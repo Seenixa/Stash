@@ -6,20 +6,21 @@ import campaign.ApplicationContext
 import campaign.maps._
 import campaign.io._
 
-class Game (
-    val printer: Printer,
-    val utility: Utility
-    ) {
+class Game(
+  val printer: Printer,
+  val utility: Utility) {
 
   def start(gameMap: String, appCon: ApplicationContext): Unit = {
     gameMap match {
-      case "UnitTest" => var gameStart = new UnitTest(appCon)
-      case "TestMap" => var gameStart = new TestMap(appCon)
-      case _ => println(s"Can't really start up that one now can we? $gameMap")
+      case "UnitTest" =>
+        var gameStart = new UnitTest(appCon)
+      case "TestMap"  =>
+        var gameStart = new TestMap(appCon)
+      case _          => println(s"Can't really start up that one now can we? $gameMap")
     }
   }
-  
-  def chooseCharacterClass: PlayerCharacter = {
+
+  def chooseCharacterClass(appCon: ApplicationContext): PlayerCharacter = {
     printer.characterChoice
     var newChar = new PlayerCharacter
     var choice = utility.inputNumber
@@ -32,8 +33,10 @@ class Game (
         case 1 => newChar = new Warrior
         case 2 => newChar = new Rogue
         case 3 => newChar = new Mage
-        case _ => throw new Error("Something's wrong, I can feel it.")
+        case _ => chooseCharacterClass(appCon)
       }
+      for (spell <- newChar.baseSpells)
+        appCon.spellHandler.learnSpell(newChar, spell)
     }
     newChar
   }

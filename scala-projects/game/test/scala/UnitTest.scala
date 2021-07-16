@@ -7,9 +7,9 @@ import campaign.ApplicationContext
 class UnitTest (val appCon: ApplicationContext) {
 
   var yourCharacter = new PlayerCharacter
-  yourCharacter = appCon.game.chooseCharacterClass
-  
-  appCon.stats.levelTo(yourCharacter, 30)
+  yourCharacter = appCon.game.chooseCharacterClass(appCon)
+  println(yourCharacter.inventory)
+  /*appCon.stats.levelTo(yourCharacter, 30)
   
 
   
@@ -17,7 +17,7 @@ class UnitTest (val appCon: ApplicationContext) {
   appCon.stats.SpendMoreSkillPoints(yourCharacter, "strength", 30)
   appCon.stats.SpendMoreSkillPoints(yourCharacter, "agility", 30)
   
-  appCon.printer.character(yourCharacter)
+  appCon.printer.character(yourCharacter)*/
   
 
 }

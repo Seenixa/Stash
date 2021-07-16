@@ -1,7 +1,8 @@
 package campaign.characters
 
-import campaign.items.Items
+import campaign.item.Item
 import campaign.spells.Spells
+import campaign.item.itemList.ItemList
 
 class PlayerCharacter extends Character {
 
@@ -16,8 +17,9 @@ class PlayerCharacter extends Character {
   var unspentSkillPoints = 0
 
   var baseSpells = List[Spells]()
-  var inventory = Map[String, Items]()
+  var inventory = Map[String, Item]()
   var spellBook = Map[String, Spells]()
+  val itemList = new ItemList
 
   override def toString = s"""level:        $level
                              |class:        ${this.getClass.getSimpleName}

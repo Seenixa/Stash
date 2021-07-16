@@ -1,5 +1,5 @@
 package campaign.spells.playablespells
-import campaign.characters.Character
+import campaign.characters.PlayerCharacter
 import campaign.spells.Spells
 
 class ShieldBash extends Spells {
@@ -9,5 +9,8 @@ class ShieldBash extends Spells {
   stunDuration = 1
   manaCost = 10
 
-
+  override def updateValues(char: PlayerCharacter) = {
+    damage = char.minHitDamage
+  }
+  
 }

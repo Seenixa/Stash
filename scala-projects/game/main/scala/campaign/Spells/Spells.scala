@@ -1,5 +1,5 @@
 package campaign.spells
-import campaign.characters.Character
+import campaign.characters.PlayerCharacter
 
 
 class Spells {
@@ -13,7 +13,7 @@ class Spells {
   var poisonDuration = 0
   var stunDuration = 0
 
-  def updateValues(char: Character): Unit = {
+  def updateValues(char: PlayerCharacter): Unit = {
     
   }
 

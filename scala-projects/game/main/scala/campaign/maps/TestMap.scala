@@ -21,17 +21,15 @@ class TestMap(val appCon: ApplicationContext) {
       choice = appCon.utility.inputNumber
       choice match {
         case 1 => {
-          yourCharacter = appCon.game.chooseCharacterClass
-          for (spell <- yourCharacter.baseSpells) {
-            appCon.spellStats.learnSpell(yourCharacter, spell)
-            appCon.stats.updateStats(yourCharacter)
-          }
+          yourCharacter = appCon.game.chooseCharacterClass(appCon)
           println("strength:")
           takeInput = appCon.utility.inputNumber
+          if (takeInput != 0){
           while (yourCharacter.unspentSkillPoints < takeInput) {
             appCon.stats.levelTo(yourCharacter, yourCharacter.level + takeInput / 5)
             if (yourCharacter.unspentSkillPoints < takeInput)
               appCon.stats.levelTo(yourCharacter, yourCharacter.level + 1)
+          }
           }
           appCon.stats.SpendMoreSkillPoints(yourCharacter, "strength", takeInput)
           println("agility:")
@@ -60,7 +58,7 @@ class TestMap(val appCon: ApplicationContext) {
           appCon.stats.SpendMoreSkillPoints(yourCharacter, "vitality", takeInput)
           println("Items: ")
           appCon.printer.notYet
-
+          characterSetup = true
         }
 
         case 2 => {

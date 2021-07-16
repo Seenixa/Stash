@@ -31,4 +31,9 @@ class SpellHandler(
     spell.damage
   }
 
+  def learnSpell(char: PlayerCharacter, spell: Spells) = {
+    char.spellBook += (spell.name -> spell)
+    spell.updateValues(char)
+  }
+
 }
