@@ -5,15 +5,14 @@ class Utility (
   ) {
 
   def inputNumber = {
-    var input = 0
-    do
+    var input = 9999
+    do {
       try {
         input = scala.io.StdIn.readInt()
       } catch {
         case _: Throwable => printer.wrongInputNumber
       }
-    while (input.getClass.getSimpleName != "int" || input < 1)
+    } while (input.getClass.getSimpleName != "int" || input == 9999)
     input
-  }
-  
+  }  
 }

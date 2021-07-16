@@ -15,5 +15,9 @@ class Warrior extends PlayerCharacter {
   mana = maxMana
   shield = 0
   baseSpells = List(new ShieldBash, new ShieldWall)
+  
+  inventory += ("Main-hand Weapon" -> itemList.shortSword,
+    "Armor" -> itemList.empty,
+    "Shield" -> itemList.rustyShield)
 
 }

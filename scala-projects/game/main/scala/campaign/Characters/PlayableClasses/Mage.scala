@@ -15,4 +15,8 @@ class Mage extends PlayerCharacter {
   shield = 0
   baseSpells = List(new Fireball, new Frostbolt)
 
+  inventory += ("Weapon" -> itemList.shortStaff,
+    "Armor" -> itemList.raggedClothes,
+    "Amulet" -> itemList.empty)
+
 }

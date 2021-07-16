@@ -1,5 +1,4 @@
 package campaign.characters
-import campaign.items.Items
 import campaign.spells.Spells
 import campaign.ApplicationContext
 

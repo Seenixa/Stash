@@ -1,9 +1,7 @@
 package campaign.characters
 import campaign.io.Printer
-import campaign.spells.SpellStats
 
 class Stats(
-  val spellStats: SpellStats,
   val printer:    Printer) {
 
   def levelUp(char: PlayerCharacter): Boolean = {
@@ -35,7 +33,8 @@ class Stats(
 
   def updateStats(char: PlayerCharacter) = {
     levelUp(char)
-    spellStats.updateSpellValues(char)
+    for (spell <- char.spellBook)
+      spell._2.updateValues(char)
     char.maxHealth = char.vitality * 10
     char.maxMana = char.intelligence * 10
     char.getClass.getSimpleName match {

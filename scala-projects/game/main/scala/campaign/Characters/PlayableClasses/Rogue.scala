@@ -15,6 +15,10 @@ class Rogue extends PlayerCharacter {
   mana = maxMana
   shield = 0
   baseSpells = List(new Ambush, new PoisonShot)
+  
+  inventory += ("Main-hand Weapon" -> itemList.dagger,
+    "Armor" -> itemList.empty,
+    "Off-hand Weapon" -> itemList.dagger)
 
 
 }
