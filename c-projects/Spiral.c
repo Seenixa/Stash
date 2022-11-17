@@ -131,7 +131,7 @@ int changeStep(int step){
     return step;
 }
 
-void snailMoves(int table[size][size], int inputInt[], int output[]){
+void spiral(int table[size][size], int inputInt[], int output[]){
     int stepLength = -1;
     int stepCounter = 0;
     int intCounter = 0;
@@ -220,7 +220,7 @@ int main(){
         return 0;
     }
 
-    snailMoves(table, bemenetInt, kimenetInt);
+    spiral(table, bemenetInt, kimenetInt);
 
     for(int i = 0; kimenetInt[i] != -2; i++){
         if(kimenetInt[i + 1] == -2){
